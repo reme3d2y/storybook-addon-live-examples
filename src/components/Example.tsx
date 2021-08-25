@@ -19,7 +19,7 @@ export const LIVE_EXAMPLES_ADDON_ID = 'storybook-addon-live-examples';
 export type Config = {
     borderColor?: string;
     borderRadius?: number;
-    barBg?: string;
+    actionBg?: string;
     actionColor?: string;
     actionAccent?: string;
     errorsBg?: string;
@@ -70,7 +70,7 @@ const StyledActionBar = styled(ActionBar)<{ config: Config }>(
         justify-content: center;
         min-width: 110px;
         transition: box-shadow 0.2s ease;
-        background: ${config.barBg || theme.barBg};
+        background: ${config.actionBg || theme.actionBg};
         color: ${config.actionColor || theme.color.defaultText};
         border-color: ${config.borderColor || theme.appBorderColor};
 
@@ -88,7 +88,7 @@ const StyledActionBar = styled(ActionBar)<{ config: Config }>(
 
 const StyledLiveEditor = styled(LiveEditor)<{ live?: boolean; config: Config }>(
     ({ config, theme, live }) => `
-    font-family: ${config.fontCode || theme.typography.fonts.mono};
+    font-family: ${config.fontCode || theme.typography.fonts.mono} !important;
     outline: 0;
 
     & textarea,
