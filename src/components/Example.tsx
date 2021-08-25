@@ -143,6 +143,8 @@ export const Example: FC<ExampleProps> = ({
     const [expanded, setExpanded] = useState(expandedProp || !live);
     const [copied, setCopied] = useState(false);
 
+    const allowShare = sandboxPath && live;
+
     const handleCopy = useCallback(() => {
         copyToClipboard(code).then(() => {
             setCopied(true);
@@ -165,7 +167,7 @@ export const Example: FC<ExampleProps> = ({
             title: copied ? copyText[1] : copyText[0],
             onClick: handleCopy,
         },
-        sandboxPath && {
+        allowShare && {
             title: shareText[0],
             onClick: handleShare,
         },
