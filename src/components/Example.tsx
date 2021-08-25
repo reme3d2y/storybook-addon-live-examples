@@ -170,7 +170,7 @@ export const Example: FC<ExampleProps> = ({
                     noInline={detectNoInline(code)}
                     theme={config.editorTheme || defaultTheme}
                     scope={{
-                        ...scope,
+                        ...config.cope,
                         ...scope,
                     }}
                 >
