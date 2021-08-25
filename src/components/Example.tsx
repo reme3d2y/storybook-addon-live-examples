@@ -26,6 +26,8 @@ export type Config = {
     errorsColor?: string;
     fontCode?: string;
     fontBase?: string;
+    fontSizeCode?: number;
+    fontSizeBase?: number;
 
     sandboxPath?: string;
     copyText?: [string, string];
@@ -57,7 +59,7 @@ const ComponentWrapper = styled.div(
     margin: 25px 0 40px;
     border-radius: ${getConfig().borderRadius || theme.appBorderRadius}px;
     font-family: ${getConfig().fontBase || theme.typography.fonts.base};
-    font-size: 14px;
+    font-size: ${getConfig().fontSizeBase || 16}px;
   `,
 );
 
@@ -93,6 +95,7 @@ const StyledActionBar = styled(ActionBar)(
 const LiveEditorWrapper = styled.div<{ live?: boolean }>(
     ({ theme, live }) => `
     border-top: 1px solid ${getConfig().borderColor || theme.appBorderColor};
+    font-size: ${getConfig().fontSizeBase || 14}px;
 
     & > div {
         font-family: ${getConfig().fontCode || theme.typography.fonts.mono} !important;
