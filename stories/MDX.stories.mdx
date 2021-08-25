@@ -1,0 +1,19 @@
+import { ArgsTable, Preview, Story, Meta } from '@storybook/addon-docs';
+
+<Meta title='Components/MDX' parameters={{ previewTabs: { canvas: { hidden: true } } }} />
+
+# MDX story example
+
+```tsx live expanded
+render(() => {
+    const [counter, setCounter] = React.useState(0);
+    return (
+        <>
+            <h2>Super live counter: {counter}</h2>
+            <button type='button' onClick={() => setCounter((c) => c + 1)}>
+                Increment
+            </button>
+        </>
+    );
+});
+```

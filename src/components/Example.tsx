@@ -23,7 +23,7 @@ const ComponentWrapper = styled.div(
     margin: 25px 0 40px;
     border-radius: ${theme.appBorderRadius}px;
     font-family: ${theme.typography.fonts.base};
-    font-size: ${theme.typography.size.s3}px;
+    font-size: 14px;
   `,
 );
 
@@ -56,12 +56,14 @@ const StyledActionBar = styled(ActionBar)(
 `,
 );
 
-const StyledLiveEditor = styled(LiveEditor)(
-    ({ theme }) => `
+const StyledLiveEditor = styled(LiveEditor)<{ live?: boolean }>(
+    ({ theme, live }) => `
     font-family: ${theme.typography.fonts.mono};
     outline: 0;
 
-    & textarea {
+    & textarea,
+    & pre {
+        padding: ${live ? '12px' : '24px'} !important;
         outline-color: transparent;
     }
 `,
@@ -187,6 +189,7 @@ export const Example: FC<ExampleProps> = ({
 
                         {expanded && (
                             <StyledLiveEditor
+                                live={live}
                                 onChange={handleChange}
                                 language={language}
                                 disabled={!live}
