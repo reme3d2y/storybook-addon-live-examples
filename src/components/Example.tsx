@@ -1,6 +1,6 @@
 import React, { FC, useState, useCallback, useEffect, useRef } from 'react';
 import { LiveProvider, LiveEditor, LivePreview, LiveError } from 'react-live';
-import { Language } from 'prism-react-renderer';
+import { Language, PrismTheme } from 'prism-react-renderer';
 import defaultTheme from 'prism-react-renderer/themes/github';
 import { styled } from '@storybook/theming';
 import { ActionBar } from '@storybook/components';
@@ -12,76 +12,29 @@ import {
     copyToClipboard,
     useCodeFromChildren,
 } from './utils';
+import { ActionItem } from '@storybook/components/dist/ts3.9/ActionBar/ActionBar';
 
 export const LIVE_EXAMPLES_ADDON_ID = 'storybook-addon-live-examples';
 
-const ComponentWrapper = styled.div(
-    ({ theme }) => `
-    position: relative;
-    overflow: hidden;
-    border: 1px solid ${theme.appBorderColor};
-    margin: 25px 0 40px;
-    border-radius: ${theme.appBorderRadius}px;
-    font-family: ${theme.typography.fonts.base};
-    font-size: 14px;
-  `,
-);
+export type Config = {
+    borderColor?: string;
+    borderRadius?: number;
+    barBg?: string;
+    actionColor?: string;
+    actionAccent?: string;
+    errorsBg?: string;
+    errorsColor?: string;
+    fontCode?: string;
+    fontBase?: string;
 
-const PreviewWrapper = styled.div(`
-    position: relative;
-    padding: 30px 20px;
-`);
+    sandboxPath?: string;
+    copyText?: [string, string];
+    shareText?: [string, string];
+    expandText?: [string, string];
 
-const StyledActionBar = styled(ActionBar)(
-    ({ theme }) => `
-    background-color: transparent;
-
-    & button {
-        justify-content: center;
-        min-width: 110px;
-        transition: box-shadow 0.2s ease;
-        background: ${theme.barBg};
-        color: ${theme.color.defaultText};
-        border-color: ${theme.appBorderColor};
-
-        &:focus {
-            outline: 0;
-            box-shadow: none;
-        }
-
-        &:hover {
-            box-shadow: ${theme.color.secondary} 0 -3px 0 0 inset;
-        }
-    }
-`,
-);
-
-const StyledLiveEditor = styled(LiveEditor)<{ live?: boolean }>(
-    ({ theme, live }) => `
-    font-family: ${theme.typography.fonts.mono};
-    outline: 0;
-
-    & textarea,
-    & pre {
-        padding: ${live ? '12px' : '24px'} !important;
-        outline-color: transparent;
-    }
-`,
-);
-
-const StyledLiveErrors = styled(LiveError)(
-    ({ theme }) => `
-    font-family: ${theme.typography.fonts.mono};
-    padding: 10px;
-    margin: 0;
-    background-color: #feebea;
-    color: #ef3124 !important;
-
-    &:nth-child(2) {
-        border-top: 1px solid ${theme.appBorderColor};
-    }
-`,
-);
+    editorTheme?: PrismTheme;
+    scope: Record<string, any>;
+};
 
 export type ExampleProps = {
     live?: boolean;
@@ -92,7 +45,75 @@ export type ExampleProps = {
     scope?: Record<string, unknown>;
 };
 
-const getConfig = () => {
+const ComponentWrapper = styled.div<{ config: Config }>(
+    ({ config, theme }) => `
+    position: relative;
+    overflow: hidden;
+    border: 1px solid ${config.borderColor || theme.appBorderColor};
+    margin: 25px 0 40px;
+    border-radius: ${config.borderRadius || theme.appBorderRadius}px;
+    font-family: ${config.fontBase || theme.typography.fonts.base};
+    font-size: 14px;
+  `,
+);
+
+const PreviewWrapper = styled.div(`
+    position: relative;
+    padding: 30px 20px;
+`);
+
+const StyledActionBar = styled(ActionBar)<{ config: Config }>(
+    ({ config, theme }) => `
+    background-color: transparent;
+
+    & button {
+        justify-content: center;
+        min-width: 110px;
+        transition: box-shadow 0.2s ease;
+        background: ${config.barBg || theme.barBg};
+        color: ${config.actionColor || theme.color.defaultText};
+        border-color: ${config.borderColor || theme.appBorderColor};
+
+        &:focus {
+            outline: 0;
+            box-shadow: none;
+        }
+
+        &:hover {
+            box-shadow: ${config.actionAccent || theme.color.secondary} 0 -3px 0 0 inset;
+        }
+    }
+`,
+);
+
+const StyledLiveEditor = styled(LiveEditor)<{ live?: boolean; config: Config }>(
+    ({ config, theme, live }) => `
+    font-family: ${config.fontCode || theme.typography.fonts.mono};
+    outline: 0;
+
+    & textarea,
+    & pre {
+        padding: ${live ? '12px' : '24px'} !important;
+        outline-color: transparent;
+    }
+`,
+);
+
+const StyledLiveErrors = styled(LiveError)<{ config: Config }>(
+    ({ config, theme }) => `
+    font-family: ${config.fontCode || theme.typography.fonts.mono};
+    padding: 10px;
+    margin: 0;
+    background-color: ${config.errorsBg || '#feebea'};
+    color: ${config.errorsBg || '#ef3124'} !important;
+
+    &:nth-child(2) {
+        border-top: 1px solid ${config.borderColor || theme.appBorderColor};
+    }
+`,
+);
+
+const getConfig = (): Config => {
     return addons.getConfig()[LIVE_EXAMPLES_ADDON_ID] || {};
 };
 
@@ -139,7 +160,7 @@ export const Example: FC<ExampleProps> = ({
         );
     };
 
-    const actions = [
+    const actions: ActionItem[] = [
         {
             title: copied ? copyText[1] : copyText[0],
             onClick: handleCopy,
@@ -176,19 +197,20 @@ export const Example: FC<ExampleProps> = ({
                         ...scope,
                     }}
                 >
-                    <ComponentWrapper>
+                    <ComponentWrapper config={config}>
                         {live ? (
                             <PreviewWrapper>
-                                <StyledActionBar actionItems={actions} />
+                                <StyledActionBar actionItems={actions} config={config} />
 
                                 <LivePreview />
                             </PreviewWrapper>
                         ) : (
-                            <StyledActionBar actionItems={actions} />
+                            <StyledActionBar actionItems={actions} config={config} />
                         )}
 
                         {expanded && (
                             <StyledLiveEditor
+                                config={config}
                                 live={live}
                                 onChange={handleChange}
                                 language={language}
@@ -196,7 +218,7 @@ export const Example: FC<ExampleProps> = ({
                             />
                         )}
 
-                        {live && <StyledLiveErrors />}
+                        {live && <StyledLiveErrors config={config} />}
                     </ComponentWrapper>
                 </LiveProvider>
             ) : (
