@@ -1,3 +1,16 @@
+# v0.0.6 (Wed Aug 25 2021)
+
+#### ⚠️ Pushed to `main`
+
+- feat: allow to share only live examples ([@reme3d2y](https://github.com/reme3d2y))
+- fix: theming ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v0.0.5 (Wed Aug 25 2021)
 
 #### ⚠️ Pushed to `main`
