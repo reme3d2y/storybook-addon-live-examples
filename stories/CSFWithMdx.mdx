@@ -1,0 +1,17 @@
+import { ArgsTable, Story } from '@storybook/addon-docs';
+import { Example } from '../'
+import { Docs } from './Docs';
+
+# Docs
+
+CSF with MDX docs
+
+<ArgsTable of={Docs} />
+
+<Example scope={{ Docs }} live={true}>
+    <Story id='components-csf-with-mdx--primary' />
+</Example>
+
+<Example scope={{ Docs }} live={true} expanded={true}>
+    <Story id='components-csf-with-mdx--secondary' />
+</Example>

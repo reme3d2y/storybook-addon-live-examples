@@ -1,7 +1,7 @@
 {
-  "name": "storybook-addon-kit",
-  "version": "0.0.0",
-  "description": "everything you need to build a Storybook addon",
+  "name": "storybook-addon-live-examples",
+  "version": "0.0.1",
+  "description": "Storybook live examples plugin",
   "keywords": [
     "storybook-addons",
     "style",
@@ -9,9 +9,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/storybookjs/storybook-addon-kit"
+    "url": "https://github.com/reme3d2y/storybook-addon-live-examples"
   },
-  "author": "winkerVSbecks",
+  "author": "reme3d2y",
   "license": "MIT",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -35,9 +35,7 @@
     "storybook": "start-storybook -p 6006",
     "start": "concurrently \"yarn build:watch\" \"yarn storybook -- --no-manager-cache --quiet\"",
     "build-storybook": "build-storybook",
-    "prerelease": "zx scripts/prepublish-checks.mjs",
-    "release": "yarn build && auto shipit",
-    "eject-ts": "zx scripts/eject-typescript.mjs"
+    "release": "yarn build && auto shipit"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
@@ -45,8 +43,8 @@
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-react": "^7.12.5",
     "@babel/preset-typescript": "^7.13.0",
-    "@storybook/addon-essentials": "^6.3.6",
-    "@storybook/react": "^6.3.6",
+    "@storybook/addon-essentials": "^6.1.0",
+    "@storybook/react": "^6.1.0",
     "auto": "^10.3.0",
     "babel-loader": "^8.1.0",
     "boxen": "^5.0.1",
@@ -57,15 +55,15 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "rimraf": "^3.0.2",
-    "typescript": "^4.2.4",
-    "zx": "^1.14.1"
+    "typescript": "^4.2.4"
   },
   "peerDependencies": {
-    "@storybook/addons": "^6.3.6",
-    "@storybook/api": "^6.3.6",
-    "@storybook/components": "^6.3.6",
-    "@storybook/core-events": "^6.3.6",
-    "@storybook/theming": "^6.3.6",
+    "@storybook/addon-docs": "^6.1.0",
+    "@storybook/addons": "^6.1.0",
+    "@storybook/api": "^6.1.0",
+    "@storybook/components": "^6.1.0",
+    "@storybook/core-events": "^6.1.0",
+    "@storybook/theming": "^6.1.0",
     "react": "^16.8.0 || ^17.0.0",
     "react-dom": "^16.8.0 || ^17.0.0"
   },
@@ -81,12 +79,15 @@
     "access": "public"
   },
   "storybook": {
-    "displayName": "Addon Kit",
+    "displayName": "Storybook live examples plugin",
     "supportedFrameworks": [
       "react",
       "vue",
       "angular"
     ],
     "icon": "https://user-images.githubusercontent.com/321738/63501763-88dbf600-c4cc-11e9-96cd-94adadc2fd72.png"
+  },
+  "dependencies": {
+    "react-live": "^2.3.0"
   }
 }
