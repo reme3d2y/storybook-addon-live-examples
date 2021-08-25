@@ -45,14 +45,18 @@ export type ExampleProps = {
     scope?: Record<string, unknown>;
 };
 
-const ComponentWrapper = styled.div<{ config: Config }>(
-    ({ config, theme }) => `
+const getConfig = (): Config => {
+    return addons.getConfig()[LIVE_EXAMPLES_ADDON_ID] || {};
+};
+
+const ComponentWrapper = styled.div(
+    ({ theme }) => `
     position: relative;
     overflow: hidden;
-    border: 1px solid ${config.borderColor || theme.appBorderColor};
+    border: 1px solid ${getConfig().borderColor || theme.appBorderColor};
     margin: 25px 0 40px;
-    border-radius: ${config.borderRadius || theme.appBorderRadius}px;
-    font-family: ${config.fontBase || theme.typography.fonts.base};
+    border-radius: ${getConfig().borderRadius || theme.appBorderRadius}px;
+    font-family: ${getConfig().fontBase || theme.typography.fonts.base};
     font-size: 14px;
   `,
 );
@@ -62,17 +66,17 @@ const PreviewWrapper = styled.div(`
     padding: 30px 20px;
 `);
 
-const StyledActionBar = styled(ActionBar)<{ config: Config }>(
-    ({ config, theme }) => `
+const StyledActionBar = styled(ActionBar)(
+    ({ theme }) => `
     background-color: transparent;
 
     & button {
         justify-content: center;
         min-width: 110px;
         transition: box-shadow 0.2s ease;
-        background: ${config.actionBg || theme.actionBg};
-        color: ${config.actionColor || theme.color.defaultText};
-        border-color: ${config.borderColor || theme.appBorderColor};
+        background: ${getConfig().actionBg || theme.actionBg};
+        color: ${getConfig().actionColor || theme.color.defaultText};
+        border-color: ${getConfig().borderColor || theme.appBorderColor};
 
         &:focus {
             outline: 0;
@@ -80,16 +84,20 @@ const StyledActionBar = styled(ActionBar)<{ config: Config }>(
         }
 
         &:hover {
-            box-shadow: ${config.actionAccent || theme.color.secondary} 0 -3px 0 0 inset;
+            box-shadow: ${getConfig().actionAccent || theme.color.secondary} 0 -3px 0 0 inset;
         }
     }
 `,
 );
 
-const StyledLiveEditor = styled(LiveEditor)<{ live?: boolean; config: Config }>(
-    ({ config, theme, live }) => `
-    font-family: ${config.fontCode || theme.typography.fonts.mono} !important;
-    outline: 0;
+const LiveEditorWrapper = styled.div<{ live?: boolean }>(
+    ({ theme, live }) => `
+    border-top: 1px solid ${getConfig().borderColor || theme.appBorderColor};
+
+    & > div {
+        font-family: ${getConfig().fontCode || theme.typography.fonts.mono} !important;
+        outline: 0;
+    }
 
     & textarea,
     & pre {
@@ -99,23 +107,19 @@ const StyledLiveEditor = styled(LiveEditor)<{ live?: boolean; config: Config }>(
 `,
 );
 
-const StyledLiveErrors = styled(LiveError)<{ config: Config }>(
-    ({ config, theme }) => `
-    font-family: ${config.fontCode || theme.typography.fonts.mono};
+const StyledLiveErrors = styled(LiveError)(
+    ({ theme }) => `
+    font-family: ${getConfig().fontCode || theme.typography.fonts.mono};
     padding: 10px;
     margin: 0;
-    background-color: ${config.errorsBg || '#feebea'};
-    color: ${config.errorsBg || '#ef3124'} !important;
+    background-color: ${getConfig().errorsBg || '#feebea'};
+    color: ${getConfig().errorsBg || '#ef3124'} !important;
 
     &:nth-child(2) {
-        border-top: 1px solid ${config.borderColor || theme.appBorderColor};
+        border-top: 1px solid ${getConfig().borderColor || theme.appBorderColor};
     }
 `,
 );
-
-const getConfig = (): Config => {
-    return addons.getConfig()[LIVE_EXAMPLES_ADDON_ID] || {};
-};
 
 export const Example: FC<ExampleProps> = ({
     children,
@@ -199,28 +203,28 @@ export const Example: FC<ExampleProps> = ({
                         ...scope,
                     }}
                 >
-                    <ComponentWrapper config={config}>
+                    <ComponentWrapper>
                         {live ? (
                             <PreviewWrapper>
-                                <StyledActionBar actionItems={actions} config={config} />
+                                <StyledActionBar actionItems={actions} />
 
                                 <LivePreview />
                             </PreviewWrapper>
                         ) : (
-                            <StyledActionBar actionItems={actions} config={config} />
+                            <StyledActionBar actionItems={actions} />
                         )}
 
                         {expanded && (
-                            <StyledLiveEditor
-                                config={config}
-                                live={live}
-                                onChange={handleChange}
-                                language={language}
-                                disabled={!live}
-                            />
+                            <LiveEditorWrapper live={live}>
+                                <LiveEditor
+                                    onChange={handleChange}
+                                    language={language}
+                                    disabled={!live}
+                                />
+                            </LiveEditorWrapper>
                         )}
 
-                        {live && <StyledLiveErrors config={config} />}
+                        {live && <StyledLiveErrors />}
                     </ComponentWrapper>
                 </LiveProvider>
             ) : (
