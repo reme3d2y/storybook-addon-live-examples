@@ -95,7 +95,7 @@ const StyledActionBar = styled(ActionBar)(
 const LiveEditorWrapper = styled.div<{ live?: boolean }>(
     ({ theme, live }) => `
     border-top: 1px solid ${getConfig().borderColor || theme.appBorderColor};
-    font-size: ${getConfig().fontSizeBase || 14}px;
+    font-size: ${getConfig().fontSizeCode || 14}px;
 
     & > div {
         font-family: ${getConfig().fontCode || theme.typography.fonts.mono} !important;
