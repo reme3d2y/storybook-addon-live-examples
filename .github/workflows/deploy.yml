@@ -1,11 +1,13 @@
 name: Release
 
-on: [push]
+on:
+    push:
+        branches:
+            - main
 
 jobs:
-    release:
+    deploy:
         runs-on: ubuntu-latest
-        if: "!contains(github.event.head_commit.message, 'ci skip') && !contains(github.event.head_commit.message, 'skip ci')"
         steps:
             - uses: actions/checkout@v2
 
@@ -20,9 +22,12 @@ jobs:
             - name: Install dependencies
               uses: bahmutov/npm-install@v1
 
-            - name: Create Release
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-              run: |
-                  yarn release
+            - name: Build
+              run: yarn build-storybook
+
+            - name: Deploy
+              uses: peaceiris/actions-gh-pages@v3
+              if: ${{ github.ref == 'refs/heads/main' }}
+              with:
+                github_token: ${{ secrets.GITHUB_TOKEN }}
+                publish_dir: ./storybook-static
