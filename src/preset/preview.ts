@@ -6,7 +6,11 @@ export const parameters = {
     docs: {
         components: {
             code: Example,
-            Canvas: Example,
+            Canvas: ({ mdxSource, ...restProps }: { mdxSource: string }) =>
+                React.createElement(Example, {
+                    code: decodeURIComponent(mdxSource),
+                    ...restProps,
+                }),
         },
     },
 };

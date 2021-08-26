@@ -59,7 +59,7 @@ addons.setConfig({
 
 Inside MDX-based stories you can write your code examples with plain markdown.
 
-Just put your code inside triple quotes:
+**Just put your code inside triple quotes**
 
 ```markdown
 |```tsx live
@@ -67,14 +67,23 @@ Just put your code inside triple quotes:
 |```
 ```
 
-**Or render**
+**Or render custom Canvas**
 
 ```tsx
+// Import custom Canvas from addon
 import { Canvas } from 'storybook-addon-live-examples';
 
 <Canvas live={true}>
     <h4>Wow, so simple</h4>
 </Canvas>
+```
+
+**Or use Example directly**
+
+```tsx
+import { Example } from 'storybook-addon-live-examples';
+
+<Example live={true} code={`<h4>Wow, so simple</h4>`} />
 ```
 
 ### [CSF With MDX](https://github.com/storybookjs/storybook/blob/master/addons/docs/docs/recipes.md#csf-stories-with-arbitrary-mdx)

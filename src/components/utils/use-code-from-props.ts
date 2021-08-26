@@ -4,12 +4,12 @@ import {
     MutableRefObject,
     ReactNode,
     useContext,
-    useEffect,
+    useLayoutEffect,
     useState,
 } from 'react';
 
-export function useCodeFromChildren(
-    children: ReactNode,
+export function useCodeFromProps(
+    codeProp: ReactNode,
     wrapperRef: MutableRefObject<HTMLDivElement>,
 ) {
     const docsContext = useContext(DocsContext);
@@ -17,14 +17,14 @@ export function useCodeFromChildren(
 
     const [code, setCode] = useState('');
 
-    useEffect(() => {
-        if (typeof children === 'string') {
-            setCode(children.trim());
+    useLayoutEffect(() => {
+        if (typeof codeProp === 'string') {
+            setCode(codeProp.trim());
             return;
         }
 
-        if (isValidElement(children) && children.props.id) {
-            const sourceProps = getSourceProps(children.props, docsContext, sourceContext);
+        if (isValidElement(codeProp) && codeProp.props.id) {
+            const sourceProps = getSourceProps(codeProp.props, docsContext, sourceContext);
 
             if (sourceProps.code) {
                 setCode(`render(${sourceProps.code.trim()})`);

@@ -10,7 +10,7 @@ import {
     extractLanguageFromClassName,
     detectNoInline,
     copyToClipboard,
-    useCodeFromChildren,
+    useCodeFromProps,
 } from './utils';
 import { ActionItem } from '@storybook/components/dist/ts3.9/ActionBar/ActionBar';
 
@@ -40,6 +40,7 @@ export type Config = {
 
 export type ExampleProps = {
     live?: boolean;
+    code?: string;
     children?: string;
     expanded?: boolean;
     className?: string;
@@ -126,6 +127,7 @@ const StyledLiveErrors = styled(LiveError)(
 
 export const Example: FC<ExampleProps> = ({
     children,
+    code: codeProp = children,
     expanded: expandedProp = false,
     live,
     className,
@@ -144,7 +146,7 @@ export const Example: FC<ExampleProps> = ({
     const wrapperRef = useRef<HTMLDivElement>(null);
     const timerRef = useRef(null);
 
-    const codeFromChildren = useCodeFromChildren(children, wrapperRef);
+    const codeFromChildren = useCodeFromProps(codeProp, wrapperRef);
 
     const [code, setCode] = useState('');
     const [expanded, setExpanded] = useState(expandedProp || !live);
