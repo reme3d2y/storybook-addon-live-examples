@@ -1,3 +1,15 @@
+# v0.0.10 (Thu Aug 26 2021)
+
+#### ⚠️ Pushed to `main`
+
+- feat: gh-pages deployment ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v0.0.9 (Wed Aug 25 2021)
 
 #### ⚠️ Pushed to `main`
