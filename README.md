@@ -1,12 +1,16 @@
-# ⚡ Storybook Addon Live Examples
+<h1 style={{ textAlign: "center" }} align="center">⚡ Storybook Addon Live Examples ⚡</h1>
 
-Bring your code examples to life.
+<h3 style={{ textAlign: "center" }} align="center"> Code playground with live editing inside your storybook</h3>
 
-try [live demo](https://alfa-laboratory.github.io/core-components/master/?path=/docs/%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-%D0%BF%D0%B5%D1%81%D0%BE%D1%87%D0%BD%D0%B8%D1%86%D0%B0--page)
+- 🧑‍💻 Play with the code without 3rd-party service services like codepen
+- 👥 Share examples with others
+- 🧱 Check how the components work together
+
+[Read docs](https://reme3d2y.github.io/storybook-addon-live-examples/?path=/story/components-docs--page) or [Try live demo](https://alfa-laboratory.github.io/core-components/master/?path=/docs/%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-%D0%BF%D0%B5%D1%81%D0%BE%D1%87%D0%BD%D0%B8%D1%86%D0%B0--page)
 
 ## Getting started
 
-<br />
+
 
 ### 1. Install addon
 
@@ -36,8 +40,6 @@ addons.setConfig({
     [LIVE_EXAMPLES_ADDON_ID]: {
         // custom theme from prism-react-renderer (optional)
         editorTheme: theme,
-        // path to shared page (optional)
-        sandboxPath: '123',
         // internationalization (optional)
         copyText: ['Copy', 'Copied'],
         expandText: ['Show code', 'Hide code'],
@@ -72,7 +74,7 @@ import { Canvas } from 'storybook-addon-live-examples';
 
 <Canvas live={true}>
     <h4>Wow, so simple</h4>
-</Canvas>;
+</Canvas>
 ```
 
 ### [CSF With MDX](https://github.com/storybookjs/storybook/blob/master/addons/docs/docs/recipes.md#csf-stories-with-arbitrary-mdx)
@@ -180,7 +182,7 @@ import MyComponent from '../packages/my-component';
 
 <Canvas live={true} scope={{ MyComponent }}>
     <MyComponent>Amazing</MyComponent>
-</Canvas>;
+</Canvas>
 ```
 
 #### - Setup scope globally
