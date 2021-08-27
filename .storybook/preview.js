@@ -5,6 +5,7 @@ import theme from './theme';
 
 addons.setConfig({
     [LIVE_EXAMPLES_ADDON_ID]: {
+        sandboxPath: '/docs/sandbox--page',
         scope: {
             ScopeWrapper: (props) =>
                 React.createElement('div', {
