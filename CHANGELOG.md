@@ -1,3 +1,15 @@
+# v0.0.16 (Fri Aug 27 2021)
+
+#### ⚠️ Pushed to `main`
+
+- fix: unnecessary rerender ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v0.0.15 (Fri Aug 27 2021)
 
 #### ⚠️ Pushed to `main`
