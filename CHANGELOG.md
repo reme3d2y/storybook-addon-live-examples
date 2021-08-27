@@ -1,3 +1,15 @@
+# v0.0.17 (Fri Aug 27 2021)
+
+#### ⚠️ Pushed to `main`
+
+- fix: temporary hack fix, prevent blinking when url change ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v0.0.16 (Fri Aug 27 2021)
 
 #### ⚠️ Pushed to `main`
