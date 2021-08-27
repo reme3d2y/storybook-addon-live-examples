@@ -1,29 +1,33 @@
-import { FC, useLayoutEffect, useState } from 'react';
+import React, { FC, useLayoutEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 type CanvasReplacerProps = {
     id: string;
 };
 
+const getContainer = (id: string) =>
+    document.getElementById(`anchor--${id}`) || document.getElementById(`story--${id}`);
+
 export const CanvasReplacer: FC<CanvasReplacerProps> = ({ children, id }) => {
-    const [target, setTarget] = useState<HTMLElement>();
+    const [container, setContainer] = useState<HTMLElement>(getContainer(id));
 
     useLayoutEffect(() => {
-        const container =
-            document.getElementById(`anchor--${id}`) || document.getElementById(`story--${id}`);
+        if (!container) {
+            setContainer(getContainer(id));
+        }
+    }, [container]);
 
+    useLayoutEffect(() => {
         if (container) {
             const defaultCanvas = container.querySelector('.sbdocs-preview');
 
             if (defaultCanvas) {
-                defaultCanvas.remove();
+                defaultCanvas.setAttribute('style', 'display: none');
             }
         }
+    }, [container]);
 
-        setTarget(container);
-    }, []);
+    if (!container) return null;
 
-    if (!target) return null;
-
-    return ReactDOM.createPortal(children, target);
+    return ReactDOM.createPortal(<div key={id}>{children}</div>, container);
 };
