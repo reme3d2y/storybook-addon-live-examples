@@ -1,12 +1,16 @@
 import { ArgsTable, Story } from '@storybook/addon-docs';
-import { Example } from '../';
+import { CSF} from './CSF';
 
 # CSF with MDX example
 
-<Example live={true}>
-    <Story id='components-csf-with-mdx--primary' />
-</Example>
+---
 
-<Example live={true} expanded={true}>
-    <Story id='components-csf-with-mdx--secondary' />
-</Example>
+#### [See source code](https://raw.githubusercontent.com/reme3d2y/storybook-addon-live-examples/main/stories/CSFWithMdx.mdx)
+
+
+<Story id='components-csf-with-mdx--primary' />
+
+<ArgsTable of={CSF} />
+
+<Story id='components-csf-with-mdx--secondary' />
+

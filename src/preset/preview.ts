@@ -1,16 +1,13 @@
-import React from 'react';
-
-import { Example } from '../components';
+import { CanvasAdapter, CodeAdapter } from '../components';
+import storyDecorator from '../story-decorator';
 
 export const parameters = {
     docs: {
         components: {
-            code: Example,
-            Canvas: ({ mdxSource, ...restProps }: { mdxSource: string }) =>
-                React.createElement(Example, {
-                    code: decodeURIComponent(mdxSource),
-                    ...restProps,
-                }),
+            code: CodeAdapter,
+            Canvas: CanvasAdapter,
         },
     },
 };
+
+export const decorators = [storyDecorator];

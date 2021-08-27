@@ -6,12 +6,7 @@ import { styled } from '@storybook/theming';
 import { ActionBar } from '@storybook/components';
 import { addons } from '@storybook/addons';
 
-import {
-    extractLanguageFromClassName,
-    detectNoInline,
-    copyToClipboard,
-    useCodeFromProps,
-} from './utils';
+import { extractLanguageFromClassName, detectNoInline, copyToClipboard } from './utils';
 import { ActionItem } from '@storybook/components/dist/ts3.9/ActionBar/ActionBar';
 
 export const LIVE_EXAMPLES_ADDON_ID = 'storybook-addon-live-examples';
@@ -41,26 +36,29 @@ export type Config = {
 export type ExampleProps = {
     live?: boolean;
     code?: string;
-    children?: string;
     expanded?: boolean;
     className?: string;
     language?: Language;
     scope?: Record<string, unknown>;
 };
 
-const getConfig = (): Config => {
+const getConfig = () => {
     return addons.getConfig()[LIVE_EXAMPLES_ADDON_ID] || {};
+};
+
+const configValue = (key: string, defaultValue: any): Config => {
+    return getConfig()[key] || defaultValue;
 };
 
 const ComponentWrapper = styled.div(
     ({ theme }) => `
     position: relative;
     overflow: hidden;
-    border: 1px solid ${getConfig().borderColor || theme.appBorderColor};
+    border: 1px solid ${configValue('borderColor', theme.appBorderColor)};
     margin: 25px 0 40px;
-    border-radius: ${getConfig().borderRadius || theme.appBorderRadius}px;
-    font-family: ${getConfig().fontBase || theme.typography.fonts.base};
-    font-size: ${getConfig().fontSizeBase || 16}px;
+    border-radius: ${configValue('borderRadius', theme.appBorderRadius)}px;
+    font-family: ${configValue('fontBase', theme.typography.fonts.base)};
+    font-size: ${configValue('fontSizeBase', 16)}px;
   `,
 );
 
@@ -77,9 +75,9 @@ const StyledActionBar = styled(ActionBar)(
         justify-content: center;
         min-width: 110px;
         transition: box-shadow 0.2s ease;
-        background: ${getConfig().actionBg || theme.actionBg};
-        color: ${getConfig().actionColor || theme.color.defaultText};
-        border-color: ${getConfig().borderColor || theme.appBorderColor};
+        background: ${configValue('actionBg', theme.actionBg)};
+        color: ${configValue('actionColor', theme.color.defaultText)};
+        border-color: ${configValue('borderColor', theme.appBorderColor)};
 
         &:focus {
             outline: 0;
@@ -87,19 +85,22 @@ const StyledActionBar = styled(ActionBar)(
         }
 
         &:hover {
-            box-shadow: ${getConfig().actionAccent || theme.color.secondary} 0 -3px 0 0 inset;
+            box-shadow: ${configValue('actionAccent', theme.color.secondary)} 0 -3px 0 0 inset;
         }
     }
 `,
 );
 
-const LiveEditorWrapper = styled.div<{ live?: boolean }>(
-    ({ theme, live }) => `
-    border-top: 1px solid ${getConfig().borderColor || theme.appBorderColor};
-    font-size: ${getConfig().fontSizeCode || 14}px;
+const LiveEditorWrapper = styled.div<{ live?: boolean; expanded?: boolean }>(
+    ({ theme, live, expanded }) => `
+    font-size: ${configValue('fontSizeCode', 14)}px;
+
+    border-top: ${
+        live && expanded ? `1px solid ${configValue('borderColor', theme.appBorderColor)}` : 0
+    };
 
     & > div {
-        font-family: ${getConfig().fontCode || theme.typography.fonts.mono} !important;
+        font-family: ${configValue('fontCode', theme.typography.fonts.mono)} !important;
         outline: 0;
     }
 
@@ -111,23 +112,19 @@ const LiveEditorWrapper = styled.div<{ live?: boolean }>(
 `,
 );
 
-const StyledLiveErrors = styled(LiveError)(
-    ({ theme }) => `
-    font-family: ${getConfig().fontCode || theme.typography.fonts.mono};
+const StyledLiveErrors = styled(LiveError)<{ expanded?: boolean }>(
+    ({ theme, expanded }) => `
+    font-family: ${configValue('fontCode', theme.typography.fonts.mono)};
     padding: 10px;
     margin: 0;
-    background-color: ${getConfig().errorsBg || '#feebea'};
-    color: ${getConfig().errorsBg || '#ef3124'} !important;
-
-    &:nth-child(2) {
-        border-top: 1px solid ${getConfig().borderColor || theme.appBorderColor};
-    }
+    background-color: ${configValue('errorsBg', '#feebea')};
+    color: ${configValue('errorsColor', '#ef3124')} !important;
+    border-top: 1px solid ${configValue('borderColor', theme.appBorderColor)};
 `,
 );
 
 export const Example: FC<ExampleProps> = ({
-    children,
-    code: codeProp = children,
+    code: codeProp,
     expanded: expandedProp = false,
     live,
     className,
@@ -143,12 +140,9 @@ export const Example: FC<ExampleProps> = ({
         expandText = ['Show code', 'Hide code'],
     } = config;
 
-    const wrapperRef = useRef<HTMLDivElement>(null);
     const timerRef = useRef(null);
 
-    const codeFromChildren = useCodeFromProps(codeProp, wrapperRef);
-
-    const [code, setCode] = useState('');
+    const [code, setCode] = useState(codeProp.trim());
     const [expanded, setExpanded] = useState(expandedProp || !live);
     const [copied, setCopied] = useState(false);
 
@@ -192,49 +186,35 @@ export const Example: FC<ExampleProps> = ({
         };
     }, []);
 
-    useEffect(() => {
-        setCode(codeFromChildren);
-    }, [codeFromChildren]);
-
     return (
-        <div ref={wrapperRef}>
-            {code ? (
-                <LiveProvider
-                    code={code}
-                    noInline={detectNoInline(code)}
-                    theme={config.editorTheme || defaultTheme}
-                    scope={{
-                        ...config.scope,
-                        ...scope,
-                    }}
-                >
-                    <ComponentWrapper>
-                        {live ? (
-                            <PreviewWrapper>
-                                <StyledActionBar actionItems={actions} />
+        <LiveProvider
+            code={code}
+            noInline={detectNoInline(code)}
+            theme={config.editorTheme || defaultTheme}
+            scope={{
+                ...config.scope,
+                ...scope,
+            }}
+        >
+            <ComponentWrapper>
+                {live ? (
+                    <PreviewWrapper>
+                        <StyledActionBar actionItems={actions} />
 
-                                <LivePreview />
-                            </PreviewWrapper>
-                        ) : (
-                            <StyledActionBar actionItems={actions} />
-                        )}
+                        <LivePreview />
+                    </PreviewWrapper>
+                ) : (
+                    <StyledActionBar actionItems={actions} />
+                )}
 
-                        {expanded && (
-                            <LiveEditorWrapper live={live}>
-                                <LiveEditor
-                                    onChange={handleChange}
-                                    language={language}
-                                    disabled={!live}
-                                />
-                            </LiveEditorWrapper>
-                        )}
+                {expanded && (
+                    <LiveEditorWrapper live={live} expanded={true}>
+                        <LiveEditor onChange={handleChange} language={language} disabled={!live} />
+                    </LiveEditorWrapper>
+                )}
 
-                        {live && <StyledLiveErrors />}
-                    </ComponentWrapper>
-                </LiveProvider>
-            ) : (
-                children
-            )}
-        </div>
+                {live && <StyledLiveErrors expanded={expanded} />}
+            </ComponentWrapper>
+        </LiveProvider>
     );
 };

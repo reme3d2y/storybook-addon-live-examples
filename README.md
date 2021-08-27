@@ -2,8 +2,9 @@
 
 <h3 style={{ textAlign: "center" }} align="center"> Code playground with live editing inside your storybook</h3>
 
-- 🧑‍💻 Play with the code without 3rd-party service services like codepen
+- 🧑‍💻 Play with code without 3rd-party service services like codepen
 - 👥 Share examples with others
+- 🐛 Share links to bug reproductions with others
 - 🧱 Check how the components work together
 
 [Read docs](https://reme3d2y.github.io/storybook-addon-live-examples/?path=/story/components-docs--page) or [Try live demo](https://alfa-laboratory.github.io/core-components/master/?path=/docs/%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-%D0%BF%D0%B5%D1%81%D0%BE%D1%87%D0%BD%D0%B8%D1%86%D0%B0--page)
@@ -55,6 +56,36 @@ addons.setConfig({
 
 ## Usage
 
+### CSF
+
+Live examples will be rendered instead of the default addon-docs canvas.
+
+Your can customize examples by parameters:
+
+```tsx
+export default {
+    title: 'Components/Button',
+    parameters: {
+        scope: {
+            scopeValue,
+        },
+    }
+};
+
+const scopeValue = 42;
+
+export const Primary = () => <button>{scopeValue}</button>;
+
+Primary.parameters = {
+    expanded: true
+};
+
+export const Secondary = () => <button>{scopeValue}</button>;
+```
+
+**NOTE:**
+*Most likely you will get errors after addon installing. Don't panic, just pass all variables that are used in your story to scope*
+
 ### MDX
 
 Inside MDX-based stories you can write your code examples with plain markdown.
@@ -73,8 +104,8 @@ Inside MDX-based stories you can write your code examples with plain markdown.
 // Import custom Canvas from addon
 import { Canvas } from 'storybook-addon-live-examples';
 
-<Canvas live={true}>
-    <h4>Wow, so simple</h4>
+<Canvas live={true} scope={{ value: 42 }}>
+    <h4>Wow, so simple, {value}</h4>
 </Canvas>
 ```
 
@@ -93,8 +124,6 @@ import { Example } from 'storybook-addon-live-examples';
 
 import mdx from './Button.mdx';
 
-export const Primary = () => <button />;
-
 export default {
     title: 'Components/Button',
     parameters: {
@@ -103,13 +132,22 @@ export default {
         },
     },
 };
+
+const scopeValue = 42;
+
+export const Primary = () => <button>{scopeValue}</button>;
+
+Primary.parameters = {
+    scope: {
+        scopeValue,
+    },
+};
 ```
 
 ```tsx
 // Button.mdx
 
 import { ArgsTable, Story } from '@storybook/addon-docs';
-import { Example } from 'storybook-addon-live-examples';
 
 import { Button } from './Button';
 
@@ -117,9 +155,7 @@ import { Button } from './Button';
 
 <ArgsTable of={Button} />
 
-<Example scope={{ Button }} live={true}>
-    <Story id='components-button--primary' />
-</Example>
+<Story id='components-button--primary' />
 ```
 
 
@@ -196,7 +232,7 @@ import MyComponent from '../packages/my-component';
 
 #### - Setup scope globally
 
-This is the easiest way to set up scope once for an entire project
+This is the easiest way to setup scope once for an entire project
 
 ```tsx
 //.storybook/manager.js
@@ -215,4 +251,44 @@ addons.setConfig({
 
 ```tsx
 <MyComponent>Now, you can use MyComponent in all examples</MyComponent>
+```
+
+#### - Setup scope inside monorepo
+
+This is an example of how you can add all used components and helpers to the scope.
+
+```tsx
+// .storybook/scope.ts
+
+import { ComponentType } from 'react';
+
+import * as icons from 'some-icons-pack';
+import * as knobs from '@storybook/addon-knobs';
+
+// packages/{componentName}/index.ts
+const req = require.context('../packages', true, /^\.\/(.*)\/index.ts$/);
+
+const components = req.keys().reduce((acc: Record<string, ComponentType>, key) => {
+    Object.entries(req(key)).forEach(([componentName, component]: [string, any]) => {
+        acc[componentName] = component;
+    });
+
+    return acc;
+}, {});
+
+export default {
+    ...components,
+    ...icons,
+    ...knobs,
+};
+
+// .storybook/manager.js
+
+import scope from './scope';
+
+addons.setConfig({
+    [LIVE_EXAMPLES_ADDON_ID]: {
+        scope,
+    },
+});
 ```

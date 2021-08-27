@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { CSF } from './CSF';
+
 import mdx from './CSFWithMdx.mdx';
 
 export default {
@@ -20,8 +22,17 @@ export const Primary = () => {
             <button type='button' onClick={() => setCounter((c) => c + 1)}>
                 Increment
             </button>
+            <p>
+                <CSF value='I am value from scope' />
+            </p>
         </div>
     );
+};
+
+Primary.parameters = {
+    scope: {
+        CSF,
+    },
 };
 
 export const Secondary = () => {
@@ -33,6 +44,16 @@ export const Secondary = () => {
             <button type='button' onClick={() => setCounter((c) => c + 1)}>
                 Increment
             </button>
+            <p>
+                <CSF value='I am value from scope' />
+            </p>
         </div>
     );
+};
+
+Secondary.parameters = {
+    scope: {
+        CSF,
+    },
+    expanded: true,
 };

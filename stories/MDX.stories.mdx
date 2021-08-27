@@ -5,6 +5,12 @@ import { Canvas, Example } from '../';
 
 # MDX story example
 
+---
+
+#### [See source code](https://raw.githubusercontent.com/reme3d2y/storybook-addon-live-examples/main/stories/MDX.stories.mdx)
+
+export const list = [1, 2, 3];
+
 ```tsx live expanded
 render(() => {
     const [counter, setCounter] = React.useState(0);
@@ -19,8 +25,18 @@ render(() => {
 });
 ```
 
-<Example live={true} code={`<h4>Wow, so directly</h4>`} />
+<Example
+    live={true}
+    scope={{ list }}
+    code={`<>
+    <h2>Wow, so directly</h2>
+    scope: {\`{ list: \${list} }\`}
+</>`}
+/>
 
-<Canvas live={true}>
-    <h1>Wow, custom Canvas</h1>
+<Canvas live={true} scope={{ list }}>
+<>
+    <h2>Custom docs Canvas</h2>
+    scope: {`{ list: ${list} }`}
+</>
 </Canvas>
