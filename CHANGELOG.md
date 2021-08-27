@@ -1,3 +1,15 @@
+# v0.0.15 (Fri Aug 27 2021)
+
+#### ⚠️ Pushed to `main`
+
+- fix: remove only default canvas ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v0.0.14 (Fri Aug 27 2021)
 
 #### ⚠️ Pushed to `main`
