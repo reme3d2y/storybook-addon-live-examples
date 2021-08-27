@@ -112,8 +112,8 @@ const LiveEditorWrapper = styled.div<{ live?: boolean; expanded?: boolean }>(
 `,
 );
 
-const StyledLiveErrors = styled(LiveError)<{ expanded?: boolean }>(
-    ({ theme, expanded }) => `
+const StyledLiveErrors = styled(LiveError)(
+    ({ theme }) => `
     font-family: ${configValue('fontCode', theme.typography.fonts.mono)};
     padding: 10px;
     margin: 0;
@@ -213,7 +213,7 @@ export const Example: FC<ExampleProps> = ({
                     </LiveEditorWrapper>
                 )}
 
-                {live && <StyledLiveErrors expanded={expanded} />}
+                {live && <StyledLiveErrors />}
             </ComponentWrapper>
         </LiveProvider>
     );

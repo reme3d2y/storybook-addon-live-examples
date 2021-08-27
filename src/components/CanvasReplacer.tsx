@@ -13,7 +13,11 @@ export const CanvasReplacer: FC<CanvasReplacerProps> = ({ children, id }) => {
             document.getElementById(`anchor--${id}`) || document.getElementById(`story--${id}`);
 
         if (container) {
-            container.innerHTML = '';
+            const defaultCanvas = container.querySelector('.sbdocs-preview');
+
+            if (defaultCanvas) {
+                defaultCanvas.remove();
+            }
         }
 
         setTarget(container);
