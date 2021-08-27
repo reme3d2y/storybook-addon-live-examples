@@ -11,7 +11,7 @@ export const decorator = (storyFn: StoryFn, context: StoryContext) => {
 
     return (
         <CanvasReplacer id={context.id}>
-            <Example code={code} live={live} expanded={expanded} scope={scope} />
+            <Example code={code} live={live} id={context.id} expanded={expanded} scope={scope} />
         </CanvasReplacer>
     );
 };

@@ -34,6 +34,7 @@ export type Config = {
 };
 
 export type ExampleProps = {
+    id?: string;
     live?: boolean;
     code?: string;
     expanded?: boolean;
@@ -123,7 +124,11 @@ const StyledLiveErrors = styled(LiveError)(
 `,
 );
 
+// temporary hack fix: prevent blinking when url change
+const heightCache: Record<string, string> = {};
+
 export const Example: FC<ExampleProps> = ({
+    id,
     code: codeProp,
     expanded: expandedProp = false,
     live,
@@ -186,6 +191,32 @@ export const Example: FC<ExampleProps> = ({
         };
     }, []);
 
+    useEffect(() => {
+        if (!id) return;
+
+        const handler = (entries: ResizeObserverEntry[]) => {
+            const wrapperId = `wrapper-${id}`;
+            const wrapper = document.getElementById(wrapperId);
+
+            if (!wrapper) return;
+
+            if (entries[0].contentRect.height === 0) {
+                wrapper.style.height = heightCache[wrapperId];
+            } else {
+                wrapper.style.height = '';
+                heightCache[wrapperId] = getComputedStyle(wrapper).height;
+            }
+        };
+
+        const observer = new ResizeObserver(handler);
+
+        observer.observe(document.getElementById(`preview-${id}`));
+
+        () => {
+            observer.disconnect();
+        };
+    }, [id]);
+
     return (
         <LiveProvider
             code={code}
@@ -196,12 +227,12 @@ export const Example: FC<ExampleProps> = ({
                 ...scope,
             }}
         >
-            <ComponentWrapper>
+            <ComponentWrapper id={`wrapper-${id}`}>
                 {live ? (
                     <PreviewWrapper>
                         <StyledActionBar actionItems={actions} />
 
-                        <LivePreview />
+                        <LivePreview id={`preview-${id}`} />
                     </PreviewWrapper>
                 ) : (
                     <StyledActionBar actionItems={actions} />
