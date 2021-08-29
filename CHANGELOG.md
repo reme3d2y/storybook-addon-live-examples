@@ -1,3 +1,15 @@
+# v0.0.19 (Sun Aug 29 2021)
+
+#### ⚠️ Pushed to `main`
+
+- feat: add defaultCanvas param to restore default canvas ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v0.0.18 (Fri Aug 27 2021)
 
 #### ⚠️ Pushed to `main`
