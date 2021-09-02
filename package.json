@@ -4,7 +4,7 @@
     "description": "Storybook live examples plugin",
     "keywords": [
         "storybook-addons",
-        "style",
+        "code",
         "test"
     ],
     "repository": {
@@ -82,9 +82,7 @@
     "storybook": {
         "displayName": "Storybook live examples plugin",
         "supportedFrameworks": [
-            "react",
-            "vue",
-            "angular"
+            "react"
         ],
         "icon": "https://user-images.githubusercontent.com/321738/63501763-88dbf600-c4cc-11e9-96cd-94adadc2fd72.png"
     },
