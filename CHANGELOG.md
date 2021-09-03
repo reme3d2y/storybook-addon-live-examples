@@ -1,3 +1,16 @@
+# v0.0.20 (Fri Sep 03 2021)
+
+#### ⚠️ Pushed to `main`
+
+- feat: add ts support ([@reme3d2y](https://github.com/reme3d2y))
+- Update package.json ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v0.0.19 (Sun Aug 29 2021)
 
 #### ⚠️ Pushed to `main`
