@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback, useEffect, useRef } from 'react';
+import React, { FC, useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { LiveProvider, LiveEditor, LivePreview, LiveError } from 'react-live';
 import { Language, PrismTheme } from 'prism-react-renderer';
 import defaultTheme from 'prism-react-renderer/themes/github';
@@ -6,7 +6,12 @@ import { styled } from '@storybook/theming';
 import { ActionBar } from '@storybook/components';
 import { addons } from '@storybook/addons';
 
-import { extractLanguageFromClassName, detectNoInline, copyToClipboard } from './utils';
+import {
+    extractLanguageFromClassName,
+    detectNoInline,
+    copyToClipboard,
+    transpileTs,
+} from './utils';
 import { ActionItem } from '@storybook/components/dist/ts3.9/ActionBar/ActionBar';
 
 export const LIVE_EXAMPLES_ADDON_ID = 'storybook-addon-live-examples';
@@ -147,9 +152,26 @@ export const Example: FC<ExampleProps> = ({
 
     const timerRef = useRef(null);
 
-    const [code, setCode] = useState(codeProp.trim());
+    const isTS = ['typescript', 'tsx'].includes(language);
+
+    const initialCode = useMemo(() => {
+        if (isTS) {
+            transpileTs(codeProp).then((transpiled) => {
+                setCode(transpiled);
+                setReady(true);
+            });
+
+            return '';
+        }
+
+        return codeProp.trim();
+    }, []);
+
+    const [code, setCode] = useState(initialCode);
     const [expanded, setExpanded] = useState(expandedProp || !live);
     const [copied, setCopied] = useState(false);
+
+    const [ready, setReady] = useState(!isTS);
 
     const allowShare = sandboxPath && live && !scope;
 
@@ -218,16 +240,16 @@ export const Example: FC<ExampleProps> = ({
     }, [id]);
 
     return (
-        <LiveProvider
-            code={code}
-            noInline={detectNoInline(code)}
-            theme={config.editorTheme || defaultTheme}
-            scope={{
-                ...config.scope,
-                ...scope,
-            }}
-        >
-            <ComponentWrapper id={`wrapper-${id}`}>
+        <ComponentWrapper id={`wrapper-${id}`}>
+            <LiveProvider
+                code={code}
+                noInline={detectNoInline(code)}
+                theme={config.editorTheme || defaultTheme}
+                scope={{
+                    ...config.scope,
+                    ...scope,
+                }}
+            >
                 {live ? (
                     <PreviewWrapper>
                         <StyledActionBar actionItems={actions} />
@@ -238,14 +260,14 @@ export const Example: FC<ExampleProps> = ({
                     <StyledActionBar actionItems={actions} />
                 )}
 
-                {expanded && (
+                {ready && expanded && (
                     <LiveEditorWrapper live={live} expanded={true}>
                         <LiveEditor onChange={handleChange} language={language} disabled={!live} />
                     </LiveEditorWrapper>
                 )}
 
-                {live && <StyledLiveErrors />}
-            </ComponentWrapper>
-        </LiveProvider>
+                {ready && live && <StyledLiveErrors />}
+            </LiveProvider>
+        </ComponentWrapper>
     );
 };

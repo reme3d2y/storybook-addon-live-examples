@@ -13,10 +13,10 @@ export const list = [1, 2, 3];
 
 ```tsx live expanded
 render(() => {
-    const [counter, setCounter] = React.useState(0);
+    const [counter, setCounter] = React.useState<number>(0);
     return (
         <>
-            <h2>Super live counter: {counter}</h2>
+            <h2>Super live counter: {counter as String}</h2>
             <button type='button' onClick={() => setCounter((c) => c + 1)}>
                 Increment
             </button>
