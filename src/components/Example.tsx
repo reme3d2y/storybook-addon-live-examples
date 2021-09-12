@@ -5,6 +5,8 @@ import defaultTheme from 'prism-react-renderer/themes/github';
 import { styled } from '@storybook/theming';
 import { ActionBar } from '@storybook/components';
 import { addons } from '@storybook/addons';
+import prettier from 'prettier/standalone';
+import parserBabel from 'prettier/parser-babel';
 
 import {
     extractLanguageFromClassName,
@@ -152,12 +154,17 @@ export const Example: FC<ExampleProps> = ({
 
     const timerRef = useRef(null);
 
-    const isTS = ['typescript', 'tsx'].includes(language);
+    const needsTranspile = live && ['typescript', 'tsx'].includes(language);
 
     const initialCode = useMemo(() => {
-        if (isTS) {
+        if (needsTranspile) {
             transpileTs(codeProp).then((transpiled) => {
-                setCode(transpiled);
+                setCode(
+                    prettier.format(transpiled, {
+                        parser: 'babel',
+                        plugins: [parserBabel],
+                    }),
+                );
                 setReady(true);
             });
 
@@ -171,7 +178,7 @@ export const Example: FC<ExampleProps> = ({
     const [expanded, setExpanded] = useState(expandedProp || !live);
     const [copied, setCopied] = useState(false);
 
-    const [ready, setReady] = useState(!isTS);
+    const [ready, setReady] = useState(!needsTranspile);
 
     const allowShare = sandboxPath && live && !scope;
 
