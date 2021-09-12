@@ -1,3 +1,15 @@
+# v0.0.21 (Sun Sep 12 2021)
+
+#### ⚠️ Pushed to `main`
+
+- feat: run prettier after transpile, do not transpile non-live examples ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v0.0.20 (Fri Sep 03 2021)
 
 #### ⚠️ Pushed to `main`
