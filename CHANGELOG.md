@@ -1,3 +1,15 @@
+# v0.0.22 (Mon Sep 27 2021)
+
+#### ⚠️ Pushed to `main`
+
+- feat: add defaultCanvas to config ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v0.0.21 (Sun Sep 12 2021)
 
 #### ⚠️ Pushed to `main`
