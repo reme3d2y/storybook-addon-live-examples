@@ -26,7 +26,7 @@ export const decorator = (storyFn: StoryFn, context: StoryContext) => {
                 expanded={expanded}
                 scope={scope}
                 language={
-                    context.parameters.fileName
+                    typeof context.parameters.fileName === 'string'
                         ? extractLanguageFromFilename(context.parameters.fileName)
                         : undefined
                 }
