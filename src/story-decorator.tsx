@@ -1,10 +1,17 @@
-import { StoryContext, StoryFn } from '@storybook/addons';
+import addons, { StoryContext, StoryFn } from '@storybook/addons';
 import React from 'react';
-import { CanvasReplacer, Example } from './components';
+import { CanvasReplacer, Example, LIVE_EXAMPLES_ADDON_ID } from './components';
 import { extractLanguageFromFilename } from './components/utils';
 
 export const decorator = (storyFn: StoryFn, context: StoryContext) => {
-    if (context.viewMode !== 'docs' || context.parameters.defaultCanvas) return storyFn();
+    console.log();
+
+    if (
+        context.viewMode !== 'docs' ||
+        context.parameters.defaultCanvas ||
+        addons.getConfig()[LIVE_EXAMPLES_ADDON_ID].defaultCanvas
+    )
+        return storyFn();
 
     const { live = true, expanded = false, storySource, scope } = context.parameters;
 
