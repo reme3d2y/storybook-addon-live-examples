@@ -25,7 +25,11 @@ export const decorator = (storyFn: StoryFn, context: StoryContext) => {
                 id={context.id}
                 expanded={expanded}
                 scope={scope}
-                language={extractLanguageFromFilename(context.parameters.fileName)}
+                language={
+                    context.parameters.fileName
+                        ? extractLanguageFromFilename(context.parameters.fileName)
+                        : undefined
+                }
             />
         </CanvasReplacer>
     );
