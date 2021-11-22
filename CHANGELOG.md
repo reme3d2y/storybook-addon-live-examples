@@ -1,3 +1,15 @@
+# v0.0.25 (Mon Nov 22 2021)
+
+#### ⚠️ Pushed to `main`
+
+- fix: deps ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v0.0.24 (Mon Sep 27 2021)
 
 #### ⚠️ Pushed to `main`
