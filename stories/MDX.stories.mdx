@@ -1,5 +1,8 @@
 import { ArgsTable, Preview, Story, Meta } from '@storybook/addon-docs';
 import { Canvas, Example } from '../';
+import { ModalDesktop } from '@alfalab/core-components/modal/desktop';
+import { ModalMobile } from '@alfalab/core-components/modal/mobile';
+import { Button } from '@alfalab/core-components/button';
 
 <Meta title='Components/MDX' parameters={{ previewTabs: { canvas: { hidden: true } } }} />
 
@@ -13,30 +16,74 @@ export const list = [1, 2, 3];
 
 ```tsx live expanded
 render(() => {
-    const [counter, setCounter] = React.useState<number>(0);
+    const [open, setOpen] = React.useState<boolean>(false);
+
+    const handleModalOpen = () => setOpen(!open);
     return (
         <>
-            <h2>Super live counter: {counter as String}</h2>
-            <button type='button' onClick={() => setCounter((c) => c + 1)}>
-                Increment
-            </button>
+        <Button view='primary' size='s' onClick={handleModalOpen}>
+            открыть Destop
+        </Button>
+        <ModalDesktop open={open} onClose={handleModalOpen} size='m' container={() => document.getElementById('preview-undefined')}>
+                <ModalDesktop.Header hasCloser={true}>Почему банк проверяет мои операции?</ModalDesktop.Header>
+                <ModalDesktop.Content>
+                    <p>  Сейчас много говорят об отказах банков в проведении операций, блокировках
+                        интернет-банка. Это связано с тем, что Центральный банк РФ обязывает банки
+                        выявлять операции своих клиентов, потенциально нарушающие требования
+                        Федерального закона 115-ФЗ «О противодействии легализации (отмыванию)
+                        доходов, полученных преступным путем, и финансированию терроризма».
+                    </p>
+                    <br />
+                    <p>
+                        Ознакомиться с требованиями ЦБ РФ можно на официальном сайте. Банки обязаны
+                        предотвращать проведение таких операций и поэтому могут запросить
+                        дополнительную информацию и документы, ограничить доступ к платежам через
+                        интернет-банк или даже отказать в исполнении платежа.
+                    </p>
+                </ModalDesktop.Content>
+                <ModalDesktop.Footer>
+                    <Button view='primary' size='s' onClick={handleModalOpen}>
+                        Понятно
+                    </Button>
+                </ModalDesktop.Footer>
+            </ModalDesktop>
+        </>
+    );
+});
+MOBILE
+render(() => {
+    const [open, setOpen] = React.useState<boolean>(false);
+
+    const handleModalOpen = () => setOpen(!open);
+    return (
+        <>
+        <Button view='primary' size='s' onClick={handleModalOpen}>
+            открыть Mobile
+        </Button>
+        <ModalMobile open={open} onClose={handleModalOpen} size='m' container={() => document.getElementById('preview-undefined')}>
+                <ModalMobile.Header hasCloser={true}>Почему банк проверяет мои операции?</ModalMobile.Header>
+                <ModalMobile.Content>
+                    <p>  Сейчас много говорят об отказах банков в проведении операций, блокировках
+                        интернет-банка. Это связано с тем, что Центральный банк РФ обязывает банки
+                        выявлять операции своих клиентов, потенциально нарушающие требования
+                        Федерального закона 115-ФЗ «О противодействии легализации (отмыванию)
+                        доходов, полученных преступным путем, и финансированию терроризма».
+                    </p>
+                    <br />
+                    <p>
+                        Ознакомиться с требованиями ЦБ РФ можно на официальном сайте. Банки обязаны
+                        предотвращать проведение таких операций и поэтому могут запросить
+                        дополнительную информацию и документы, ограничить доступ к платежам через
+                        интернет-банк или даже отказать в исполнении платежа.
+                    </p>
+                </ModalMobile.Content>
+                <ModalMobile.Footer>
+                    <Button view='primary' size='s' onClick={handleModalOpen}>
+                        Понятно
+                    </Button>
+                </ModalMobile.Footer>
+            </ModalMobile>
         </>
     );
 });
 ```
-
-<Example
-    live={true}
-    scope={{ list }}
-    code={`<>
-    <h2>Wow, so directly</h2>
-    scope: {\`{ list: \${list} }\`}
-</>`}
-/>
-
-<Canvas live={true} scope={{ list }}>
-<>
-    <h2>Custom docs Canvas</h2>
-    scope: {`{ list: ${list} }`}
-</>
-</Canvas>

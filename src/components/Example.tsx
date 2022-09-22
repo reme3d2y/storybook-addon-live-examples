@@ -7,6 +7,11 @@ import { ActionBar } from '@storybook/components';
 import { addons } from '@storybook/addons';
 import prettier from 'prettier/standalone';
 import parserBabel from 'prettier/parser-babel';
+import { DisplayMIcon } from '@alfalab/icons-glyph/DisplayMIcon';
+import { MobilePhoneLineMIcon } from '@alfalab/icons-glyph/MobilePhoneLineMIcon';
+import { CopyLineMIcon } from '@alfalab/icons-glyph/CopyLineMIcon';
+import { ShareMIcon } from '@alfalab/icons-glyph/ShareMIcon';
+import { RepeatMIcon } from '@alfalab/icons-glyph/RepeatMIcon';
 
 import {
     extractLanguageFromClassName,
@@ -64,15 +69,22 @@ const ComponentWrapper = styled.div(
     overflow: hidden;
     border: 1px solid ${configValue('borderColor', theme.appBorderColor)};
     margin: 25px 0 40px;
-    border-radius: ${configValue('borderRadius', theme.appBorderRadius)}px;
+    border-radius: ${configValue('borderRadius', 16)}px;
     font-family: ${configValue('fontBase', theme.typography.fonts.base)};
     font-size: ${configValue('fontSizeBase', 16)}px;
+  `,
+);
+const ComponentWrapperL = styled.div(
+    ({ theme }) => `
+    position: relative;
+    border-bottom: 1px solid ${configValue('borderColor', theme.appBorderColor)};
+    height: 48px;
+
   `,
 );
 
 const PreviewWrapper = styled.div(`
     position: relative;
-    padding: 30px 20px;
 `);
 
 const StyledActionBar = styled(ActionBar)(
@@ -99,8 +111,8 @@ const StyledActionBar = styled(ActionBar)(
 `,
 );
 
-const LiveEditorWrapper = styled.div<{ live?: boolean; expanded?: boolean }>(
-    ({ theme, live, expanded }) => `
+const LiveEditorWrapper = styled.div<{ live?: boolean; expanded?: boolean, code?: string }>(
+    ({ theme, live, expanded, code }) => `
     font-size: ${configValue('fontSizeCode', 14)}px;
 
     border-top: ${
@@ -131,6 +143,80 @@ const StyledLiveErrors = styled(LiveError)(
 `,
 );
 
+const DestopLivePreview  = styled(LivePreview)( `
+    padding: 20px;
+    height: 280px;
+    box-sizing: border-box;
+`);
+
+const MobileLivePreview  = styled(LivePreview)( 
+    ({ theme }) => `
+    padding: 16px;
+    position: relative;
+    left: 195px;
+    border-left: 1px solid ${configValue('borderColor', theme.appBorderColor)};
+    border-right: 1px solid ${configValue('borderColor', theme.appBorderColor)};
+    transform: translate3d(0, 0, 1px);
+    width: 360px;
+    height: 800px;
+    box-sizing: border-box;
+`);
+
+const ActionRepeatWrapper  = styled.div(
+    ({ theme }) => `
+    margin-left: 20px;
+    &::before {
+        content: '';
+        position: absolute;
+        height: 24px;
+        width: 1px;
+        background-color: ${configValue('borderColor', theme.appBorderColor)};
+        right: 55px;
+    }
+`);
+
+
+const Wrapper = ({
+    onClickDesktop, 
+    onClickMobile, 
+    onClickCopy, 
+    onClickShare,
+    onClickCode, 
+    onClickReset,
+    desktop, 
+}: any) => {
+const styleWrapper = {
+    display: 'flex',
+    FlexDirection: 'row',
+    justifyContent: 'space-between',
+}
+    return (
+        <div style={{
+            ...styleWrapper,
+            padding: '10px 14px',
+            
+        }}>
+            <div style={{
+                ...styleWrapper,
+                width: '80px',
+            }}>
+                <DisplayMIcon onClick={onClickDesktop} fill={desktop ? "#0B1F35" : '#B6BCC3'} />
+                <MobilePhoneLineMIcon onClick={onClickMobile} fill={!desktop ? "#0B1F35" : '#B6BCC3'}/> 
+            </div>
+            <div style={{
+                ...styleWrapper,
+                width: '180px',
+            }}>
+                <CopyLineMIcon onClick={onClickCode} fill='#B6BCC3'/>
+                <CopyLineMIcon onClick={onClickCopy} fill='#B6BCC3'/>
+                <ShareMIcon onClick={onClickShare} fill='#B6BCC3'/> 
+                <ActionRepeatWrapper><RepeatMIcon onClick={onClickReset} fill='#B6BCC3'/></ActionRepeatWrapper>
+            </div>
+        </div>
+    )
+
+}
+
 // temporary hack fix: prevent blinking when url change
 const heightCache: Record<string, string> = {};
 
@@ -147,7 +233,7 @@ export const Example: FC<ExampleProps> = ({
 
     const {
         sandboxPath,
-        copyText = ['Copy', 'Copied'],
+        copyText = ['Copy1', 'Copied'],
         shareText = ['Share', 'Share'],
         expandText = ['Show code', 'Hide code'],
     } = config;
@@ -156,15 +242,23 @@ export const Example: FC<ExampleProps> = ({
 
     const needsTranspile = live && ['typescript', 'tsx'].includes(language);
 
+    // делит код на мобильный и дестопный 
+    const getArrCode = (code: string) => {
+        let arr = code.split('MOBILE;\n')
+            setCodeDestop(arr[0])
+            setCodeMobile(arr[1])
+    }
+
     const initialCode = useMemo(() => {
         if (needsTranspile) {
             transpileTs(codeProp).then((transpiled) => {
-                setCode(
-                    prettier.format(transpiled, {
-                        parser: 'babel',
-                        plugins: [parserBabel],
-                    }),
-                );
+                let transpiledCode = prettier.format(transpiled, {
+                    parser: 'babel',
+                    plugins: [parserBabel],
+                })
+                setCode(transpiledCode);
+                getArrCode(transpiledCode)
+                setInitCode(transpiledCode);
                 setReady(true);
             });
 
@@ -175,8 +269,14 @@ export const Example: FC<ExampleProps> = ({
     }, []);
 
     const [code, setCode] = useState(initialCode);
+    const [codeDestop, setCodeDestop] = useState('');
+    const [codeMobile, setCodeMobile] = useState('');
+
+    const [initCode, setInitCode] = useState('');
+
     const [expanded, setExpanded] = useState(expandedProp || !live);
     const [copied, setCopied] = useState(false);
+    const [desktop, setDesktop] = useState(true);
 
     const [ready, setReady] = useState(!needsTranspile);
 
@@ -189,7 +289,10 @@ export const Example: FC<ExampleProps> = ({
         });
     }, [code]);
 
-    const handleChange = useCallback((value: string) => setCode(value.trim()), []);
+    const handleChange = useCallback((value: string) => {
+        getArrCode(value.trim())
+        setCode(value.trim())
+    }, []);
 
     const handleShare = () => {
         window.open(
@@ -199,10 +302,27 @@ export const Example: FC<ExampleProps> = ({
         );
     };
 
+    const handleReset = () => {
+        setCode(initCode)
+        setExpanded(!expanded)
+    };
+
+    const handleDesktop = () => {
+        setDesktop(true)
+    }
+
+    const handleMobile = () => {
+        setDesktop(false)
+    };
+
     const actions: ActionItem[] = [
         {
             title: copied ? copyText[1] : copyText[0],
             onClick: handleCopy,
+        },
+        {
+            title: 'reset',
+            onClick: handleReset,
         },
         allowShare && {
             title: shareText[0],
@@ -246,10 +366,11 @@ export const Example: FC<ExampleProps> = ({
         };
     }, [id]);
 
+
     return (
         <ComponentWrapper id={`wrapper-${id}`}>
             <LiveProvider
-                code={code}
+                code={desktop? codeDestop : codeMobile}
                 noInline={detectNoInline(code)}
                 theme={config.editorTheme || defaultTheme}
                 scope={{
@@ -259,17 +380,28 @@ export const Example: FC<ExampleProps> = ({
             >
                 {live ? (
                     <PreviewWrapper>
-                        <StyledActionBar actionItems={actions} />
+                        <ComponentWrapperL>
+                        <Wrapper 
+                            desktop={desktop}
+                            onClickDesktop={handleDesktop} 
+                            onClickMobile={handleMobile} 
+                            onClickCopy={handleCopy} 
+                            onClickShare={handleShare} 
+                            onClickCode={() => setExpanded(!expanded)} 
+                            onClickReset={handleReset}/>
+                        </ComponentWrapperL>
 
-                        <LivePreview id={`preview-${id}`} />
+                        {desktop ? 
+                        <DestopLivePreview id={`preview-${id}`} /> :
+                        <MobileLivePreview id={`preview-${id}`}/> }
                     </PreviewWrapper>
                 ) : (
                     <StyledActionBar actionItems={actions} />
                 )}
 
                 {ready && expanded && (
-                    <LiveEditorWrapper live={live} expanded={true}>
-                        <LiveEditor onChange={handleChange} language={language} disabled={!live} />
+                    <LiveEditorWrapper live={live} expanded={true} >
+                        <LiveEditor onChange={handleChange} language={language} disabled={!live} code={code} /> 
                     </LiveEditorWrapper>
                 )}
 
