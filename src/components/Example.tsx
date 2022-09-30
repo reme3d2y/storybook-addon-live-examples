@@ -326,23 +326,25 @@ export const Example: FC<ExampleProps> = ({
                         </FixedButtonContainer>
                     )}
 
-                    <PreviewWrapper className={view}>
-                        {live && !viewMismatch && <Preview id={`preview-${id}`} />}
+                    {live && (
+                        <PreviewWrapper className={view}>
+                            {!viewMismatch && <Preview id={`preview-${id}`} />}
 
-                        {viewMismatch && (
-                            <ViewMismatch>
-                                {view === 'desktop' &&
-                                    (typeof mobileOnly === 'string'
-                                        ? mobileOnly
-                                        : 'Не предназначен для использования на десктопных устройствах.')}
+                            {viewMismatch && (
+                                <ViewMismatch>
+                                    {view === 'desktop' &&
+                                        (typeof mobileOnly === 'string'
+                                            ? mobileOnly
+                                            : 'Не предназначен для использования на десктопных устройствах.')}
 
-                                {view === 'mobile' &&
-                                    (typeof desktopOnly === 'string'
-                                        ? desktopOnly
-                                        : 'Не предназначен для использования на мобильный устройствах.')}
-                            </ViewMismatch>
-                        )}
-                    </PreviewWrapper>
+                                    {view === 'mobile' &&
+                                        (typeof desktopOnly === 'string'
+                                            ? desktopOnly
+                                            : 'Не предназначен для использования на мобильный устройствах.')}
+                                </ViewMismatch>
+                            )}
+                        </PreviewWrapper>
+                    )}
                 </Wrapper>
 
                 {showEditor && (
