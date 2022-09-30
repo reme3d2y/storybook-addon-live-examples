@@ -16,6 +16,7 @@ export const list = [1, 2, 3];
 
 ```tsx live expanded
 render(() => {
+    console.log('desktop');
     const [open, setOpen] = React.useState<boolean>(false);
 
     const handleModalOpen = () => setOpen(!open);
@@ -50,8 +51,9 @@ render(() => {
         </>
     );
 });
-MOBILE
+#MOBILE#
 render(() => {
+    console.log('mobile');
     const [open, setOpen] = React.useState<boolean>(false);
 
     const handleModalOpen = () => setOpen(!open);

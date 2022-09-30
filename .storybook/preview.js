@@ -4,6 +4,7 @@ import { LIVE_EXAMPLES_ADDON_ID } from '../dist/esm/index';
 import theme from './theme';
 import { ModalDesktop } from '@alfalab/core-components/modal/desktop';
 import { ModalMobile } from '@alfalab/core-components/modal/mobile';
+import { ModalResponsive } from '@alfalab/core-components/modal/responsive';
 import { Button } from '@alfalab/core-components/button';
 
 addons.setConfig({
@@ -13,6 +14,7 @@ addons.setConfig({
             Button,
             ModalMobile,
             ModalDesktop,
+            ModalResponsive,
             ScopeWrapper: (props) =>
                 React.createElement('div', {
                     ...props,

@@ -1,25 +1,20 @@
-import React, { FC, useState, useCallback, useEffect, useRef, useMemo } from 'react';
+import React, { FC, useState, useCallback, useEffect } from 'react';
 import { LiveProvider, LiveEditor, LivePreview, LiveError } from 'react-live';
 import { Language, PrismTheme } from 'prism-react-renderer';
-import defaultTheme from 'prism-react-renderer/themes/github';
+import defaultTheme from 'prism-react-renderer/themes/vsLight';
 import { styled } from '@storybook/theming';
-import { ActionBar } from '@storybook/components';
 import { addons } from '@storybook/addons';
-import prettier from 'prettier/standalone';
-import parserBabel from 'prettier/parser-babel';
 import { DisplayMIcon } from '@alfalab/icons-glyph/DisplayMIcon';
 import { MobilePhoneLineMIcon } from '@alfalab/icons-glyph/MobilePhoneLineMIcon';
 import { CopyLineMIcon } from '@alfalab/icons-glyph/CopyLineMIcon';
 import { ShareMIcon } from '@alfalab/icons-glyph/ShareMIcon';
 import { RepeatMIcon } from '@alfalab/icons-glyph/RepeatMIcon';
 
-import {
-    extractLanguageFromClassName,
-    detectNoInline,
-    copyToClipboard,
-    transpileTs,
-} from './utils';
-import { ActionItem } from '@storybook/components/dist/ts3.9/ActionBar/ActionBar';
+import { extractLanguageFromClassName, detectNoInline, copyToClipboard } from './utils';
+import { ActionButton } from './ActionButton';
+import { ActionBar } from './ActionBar';
+import { useCode } from './useCode';
+import ExpandMIcon from './icons/ExpandMIcon';
 
 export const LIVE_EXAMPLES_ADDON_ID = 'storybook-addon-live-examples';
 
@@ -53,6 +48,8 @@ export type ExampleProps = {
     className?: string;
     language?: Language;
     scope?: Record<string, unknown>;
+    mobileOnly?: string | boolean;
+    desktopOnly?: string | boolean;
 };
 
 const getConfig = () => {
@@ -62,6 +59,9 @@ const getConfig = () => {
 const configValue = (key: string, defaultValue: any): Config => {
     return getConfig()[key] || defaultValue;
 };
+
+// temporary hack fix: prevent blinking when url change
+const heightCache: Record<string, string> = {};
 
 const ComponentWrapper = styled.div(
     ({ theme }) => `
@@ -74,45 +74,52 @@ const ComponentWrapper = styled.div(
     font-size: ${configValue('fontSizeBase', 16)}px;
   `,
 );
-const ComponentWrapperL = styled.div(
-    ({ theme }) => `
-    position: relative;
-    border-bottom: 1px solid ${configValue('borderColor', theme.appBorderColor)};
-    height: 48px;
 
-  `,
-);
-
-const PreviewWrapper = styled.div(`
+const Wrapper = styled.div(`
     position: relative;
+    background: #f0f0f0;
 `);
 
-const StyledActionBar = styled(ActionBar)(
-    ({ theme }) => `
-    background-color: transparent;
+const PreviewWrapper = styled.div`
+    background-color: #fafafa;
+    margin: 0 auto;
+    position: relative;
 
-    & button {
-        justify-content: center;
-        min-width: 110px;
-        transition: box-shadow 0.2s ease;
-        background: ${configValue('actionBg', theme.actionBg)};
-        color: ${configValue('actionColor', theme.color.defaultText)};
-        border-color: ${configValue('borderColor', theme.appBorderColor)};
-
-        &:focus {
-            outline: 0;
-            box-shadow: none;
-        }
-
-        &:hover {
-            box-shadow: ${configValue('actionAccent', theme.color.secondary)} 0 -3px 0 0 inset;
-        }
+    &.desktop {
+        width: 100%;
+        min-height: 200px;
     }
-`,
-);
 
-const LiveEditorWrapper = styled.div<{ live?: boolean; expanded?: boolean, code?: string }>(
-    ({ theme, live, expanded, code }) => `
+    &.mobile {
+        transform: translate3d(0, 0, 1px);
+        width: 360px;
+        height: 460px;
+        border-left: 1px solid #dbdee1;
+        border-right: 1px solid #dbdee1;
+    }
+`;
+
+const ViewMismatch = styled.div`
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    width: 300px;
+    color: rgba(11, 31, 53, 0.3);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+`;
+
+const Preview = styled(LivePreview)(`
+    padding: 20px;
+    box-sizing: border-box;
+`);
+
+const LiveEditorWrapper = styled.div<{ live?: boolean; expanded?: boolean; code?: string }>(
+    ({ theme, live, expanded }) => `
     font-size: ${configValue('fontSizeCode', 14)}px;
 
     border-top: ${
@@ -143,82 +150,12 @@ const StyledLiveErrors = styled(LiveError)(
 `,
 );
 
-const DestopLivePreview  = styled(LivePreview)( `
-    padding: 20px;
-    height: 280px;
-    box-sizing: border-box;
-`);
-
-const MobileLivePreview  = styled(LivePreview)( 
-    ({ theme }) => `
-    padding: 16px;
-    position: relative;
-    left: 195px;
-    border-left: 1px solid ${configValue('borderColor', theme.appBorderColor)};
-    border-right: 1px solid ${configValue('borderColor', theme.appBorderColor)};
-    transform: translate3d(0, 0, 1px);
-    width: 360px;
-    height: 800px;
-    box-sizing: border-box;
-`);
-
-const ActionRepeatWrapper  = styled.div(
-    ({ theme }) => `
-    margin-left: 20px;
-    &::before {
-        content: '';
-        position: absolute;
-        height: 24px;
-        width: 1px;
-        background-color: ${configValue('borderColor', theme.appBorderColor)};
-        right: 55px;
-    }
-`);
-
-
-const Wrapper = ({
-    onClickDesktop, 
-    onClickMobile, 
-    onClickCopy, 
-    onClickShare,
-    onClickCode, 
-    onClickReset,
-    desktop, 
-}: any) => {
-const styleWrapper = {
-    display: 'flex',
-    FlexDirection: 'row',
-    justifyContent: 'space-between',
-}
-    return (
-        <div style={{
-            ...styleWrapper,
-            padding: '10px 14px',
-            
-        }}>
-            <div style={{
-                ...styleWrapper,
-                width: '80px',
-            }}>
-                <DisplayMIcon onClick={onClickDesktop} fill={desktop ? "#0B1F35" : '#B6BCC3'} />
-                <MobilePhoneLineMIcon onClick={onClickMobile} fill={!desktop ? "#0B1F35" : '#B6BCC3'}/> 
-            </div>
-            <div style={{
-                ...styleWrapper,
-                width: '180px',
-            }}>
-                <CopyLineMIcon onClick={onClickCode} fill='#B6BCC3'/>
-                <CopyLineMIcon onClick={onClickCopy} fill='#B6BCC3'/>
-                <ShareMIcon onClick={onClickShare} fill='#B6BCC3'/> 
-                <ActionRepeatWrapper><RepeatMIcon onClick={onClickReset} fill='#B6BCC3'/></ActionRepeatWrapper>
-            </div>
-        </div>
-    )
-
-}
-
-// temporary hack fix: prevent blinking when url change
-const heightCache: Record<string, string> = {};
+const FixedButtonContainer = styled.div`
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    z-index: 1;
+`;
 
 export const Example: FC<ExampleProps> = ({
     id,
@@ -228,71 +165,47 @@ export const Example: FC<ExampleProps> = ({
     className,
     language = extractLanguageFromClassName(className),
     scope,
+    desktopOnly,
+    mobileOnly,
+    ...restProps
 }) => {
+    console.log(restProps);
     const config = getConfig();
 
     const {
         sandboxPath,
-        copyText = ['Copy1', 'Copied'],
-        shareText = ['Share', 'Share'],
-        expandText = ['Show code', 'Hide code'],
+        desktopText = 'switch to desktop view',
+        mobileText = 'switch to mobile view',
+        expandText = 'expand code',
+        copyText = 'copy code',
+        shareText = 'share code',
     } = config;
 
-    const timerRef = useRef(null);
-
-    const needsTranspile = live && ['typescript', 'tsx'].includes(language);
-
-    // делит код на мобильный и дестопный 
-    const getArrCode = (code: string) => {
-        let arr = code.split('MOBILE;\n')
-            setCodeDestop(arr[0])
-            setCodeMobile(arr[1])
-    }
-
-    const initialCode = useMemo(() => {
-        if (needsTranspile) {
-            transpileTs(codeProp).then((transpiled) => {
-                let transpiledCode = prettier.format(transpiled, {
-                    parser: 'babel',
-                    plugins: [parserBabel],
-                })
-                setCode(transpiledCode);
-                getArrCode(transpiledCode)
-                setInitCode(transpiledCode);
-                setReady(true);
-            });
-
-            return '';
-        }
-
-        return codeProp.trim();
-    }, []);
-
-    const [code, setCode] = useState(initialCode);
-    const [codeDestop, setCodeDestop] = useState('');
-    const [codeMobile, setCodeMobile] = useState('');
-
-    const [initCode, setInitCode] = useState('');
+    const [view, setView] = useState<'desktop' | 'mobile'>('desktop');
 
     const [expanded, setExpanded] = useState(expandedProp || !live);
-    const [copied, setCopied] = useState(false);
-    const [desktop, setDesktop] = useState(true);
 
-    const [ready, setReady] = useState(!needsTranspile);
+    const { code, setCode, resetCode, ready } = useCode({
+        initialCode: codeProp,
+        desktopOnly,
+        mobileOnly,
+        live,
+        language,
+        view,
+    });
 
     const allowShare = sandboxPath && live && !scope;
 
     const handleCopy = useCallback(() => {
-        copyToClipboard(code).then(() => {
-            setCopied(true);
-            timerRef.current = setTimeout(() => setCopied(false), 1500);
-        });
+        copyToClipboard(code);
     }, [code]);
 
-    const handleChange = useCallback((value: string) => {
-        getArrCode(value.trim())
-        setCode(value.trim())
-    }, []);
+    const handleChange = useCallback(
+        (value: string) => {
+            setCode(value.trim());
+        },
+        [view],
+    );
 
     const handleShare = () => {
         window.open(
@@ -302,46 +215,9 @@ export const Example: FC<ExampleProps> = ({
         );
     };
 
-    const handleReset = () => {
-        setCode(initCode)
-        setExpanded(!expanded)
-    };
-
-    const handleDesktop = () => {
-        setDesktop(true)
-    }
-
-    const handleMobile = () => {
-        setDesktop(false)
-    };
-
-    const actions: ActionItem[] = [
-        {
-            title: copied ? copyText[1] : copyText[0],
-            onClick: handleCopy,
-        },
-        {
-            title: 'reset',
-            onClick: handleReset,
-        },
-        allowShare && {
-            title: shareText[0],
-            onClick: handleShare,
-        },
-        live && {
-            title: expanded ? expandText[1] : expandText[0],
-            onClick: () => setExpanded(!expanded),
-        },
-    ].filter(Boolean);
-
     useEffect(() => {
-        () => {
-            if (timerRef.current) clearTimeout(timerRef.current);
-        };
-    }, []);
-
-    useEffect(() => {
-        if (!id) return;
+        const preview = document.getElementById(`preview-${id}`);
+        if (!preview) return;
 
         const handler = (entries: ResizeObserverEntry[]) => {
             const wrapperId = `wrapper-${id}`;
@@ -359,18 +235,25 @@ export const Example: FC<ExampleProps> = ({
 
         const observer = new ResizeObserver(handler);
 
-        observer.observe(document.getElementById(`preview-${id}`));
+        observer.observe(preview);
 
         () => {
             observer.disconnect();
         };
     }, [id]);
 
+    if (!ready) return null;
+
+    const viewMismatch = Boolean(
+        (view === 'desktop' && mobileOnly) || (view === 'mobile' && desktopOnly),
+    );
+    const showEditor = ready && expanded && !viewMismatch;
+    const showErrors = ready && live && !viewMismatch;
 
     return (
         <ComponentWrapper id={`wrapper-${id}`}>
             <LiveProvider
-                code={desktop? codeDestop : codeMobile}
+                code={code}
                 noInline={detectNoInline(code)}
                 theme={config.editorTheme || defaultTheme}
                 scope={{
@@ -378,34 +261,102 @@ export const Example: FC<ExampleProps> = ({
                     ...scope,
                 }}
             >
-                {live ? (
-                    <PreviewWrapper>
-                        <ComponentWrapperL>
-                        <Wrapper 
-                            desktop={desktop}
-                            onClickDesktop={handleDesktop} 
-                            onClickMobile={handleMobile} 
-                            onClickCopy={handleCopy} 
-                            onClickShare={handleShare} 
-                            onClickCode={() => setExpanded(!expanded)} 
-                            onClickReset={handleReset}/>
-                        </ComponentWrapperL>
+                <Wrapper>
+                    {live ? (
+                        <ActionBar
+                            rightAddons={
+                                live && (
+                                    <ActionButton
+                                        icon={<RepeatMIcon />}
+                                        onClick={resetCode}
+                                        disabled={viewMismatch}
+                                    />
+                                )
+                            }
+                        >
+                            <ActionBar.Item>
+                                <ActionButton
+                                    icon={<DisplayMIcon />}
+                                    active={view === 'desktop'}
+                                    onClick={() => setView('desktop')}
+                                    title={desktopText}
+                                />
 
-                        {desktop ? 
-                        <DestopLivePreview id={`preview-${id}`} /> :
-                        <MobileLivePreview id={`preview-${id}`}/> }
+                                <ActionButton
+                                    icon={<MobilePhoneLineMIcon />}
+                                    active={view === 'mobile'}
+                                    onClick={() => setView('mobile')}
+                                    title={mobileText}
+                                />
+                            </ActionBar.Item>
+
+                            <ActionBar.Item right={true}>
+                                <ActionButton
+                                    icon={<ExpandMIcon />}
+                                    onClick={() => setExpanded(!expanded)}
+                                    title={expandText}
+                                    active={expanded}
+                                    disabled={viewMismatch}
+                                />
+
+                                <ActionButton
+                                    icon={<CopyLineMIcon />}
+                                    onClick={handleCopy}
+                                    title={copyText}
+                                    disabled={viewMismatch}
+                                />
+
+                                {allowShare && (
+                                    <ActionButton
+                                        icon={<ShareMIcon />}
+                                        onClick={handleShare}
+                                        title={shareText}
+                                        disabled={viewMismatch}
+                                    />
+                                )}
+                            </ActionBar.Item>
+                        </ActionBar>
+                    ) : (
+                        <FixedButtonContainer>
+                            <ActionButton
+                                icon={<CopyLineMIcon />}
+                                onClick={handleCopy}
+                                title={copyText}
+                            />
+                        </FixedButtonContainer>
+                    )}
+
+                    <PreviewWrapper className={view}>
+                        {live && !viewMismatch && <Preview id={`preview-${id}`} />}
+
+                        {viewMismatch && (
+                            <ViewMismatch>
+                                {view === 'desktop' &&
+                                    (typeof mobileOnly === 'string'
+                                        ? mobileOnly
+                                        : 'Не предназначен для использования на десктопных устройствах.')}
+
+                                {view === 'mobile' &&
+                                    (typeof desktopOnly === 'string'
+                                        ? desktopOnly
+                                        : 'Не предназначен для использования на мобильный устройствах.')}
+                            </ViewMismatch>
+                        )}
                     </PreviewWrapper>
-                ) : (
-                    <StyledActionBar actionItems={actions} />
-                )}
+                </Wrapper>
 
-                {ready && expanded && (
-                    <LiveEditorWrapper live={live} expanded={true} >
-                        <LiveEditor onChange={handleChange} language={language} disabled={!live} code={code} /> 
+                {showEditor && (
+                    <LiveEditorWrapper live={live} expanded={true}>
+                        <LiveEditor
+                            onChange={handleChange}
+                            language={language}
+                            disabled={!live}
+                            key={view}
+                        />
                     </LiveEditorWrapper>
                 )}
 
-                {ready && live && <StyledLiveErrors />}
+                {showErrors && <StyledLiveErrors />}
             </LiveProvider>
         </ComponentWrapper>
     );
