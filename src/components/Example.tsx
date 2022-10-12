@@ -39,7 +39,7 @@ const ComponentWrapper = styled.div(
     overflow: hidden;
     border: 1px solid ${configValue('borderColor', theme.appBorderColor)};
     margin: 25px 0 40px;
-    border-radius: ${configValue('borderRadius', 16)}px;
+    border-radius: ${configValue('borderRadius', '16px')};
     font-family: ${configValue('fontBase', theme.typography.fonts.base)};
     font-size: ${configValue('fontSizeBase', 16)}px;
   `,
