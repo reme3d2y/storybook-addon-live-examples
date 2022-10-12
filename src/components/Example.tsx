@@ -1,9 +1,8 @@
 import React, { FC, useState, useCallback, useEffect } from 'react';
 import { LiveProvider, LiveEditor, LivePreview, LiveError } from 'react-live';
-import { Language, PrismTheme } from 'prism-react-renderer';
+import { Language } from 'prism-react-renderer';
 import defaultTheme from 'prism-react-renderer/themes/vsLight';
 import { styled } from '@storybook/theming';
-import { addons } from '@storybook/addons';
 import { DisplayMIcon } from '@alfalab/icons-glyph/DisplayMIcon';
 import { MobilePhoneLineMIcon } from '@alfalab/icons-glyph/MobilePhoneLineMIcon';
 import { CopyLineMIcon } from '@alfalab/icons-glyph/CopyLineMIcon';
@@ -15,30 +14,7 @@ import { ActionButton } from './ActionButton';
 import { ActionBar } from './ActionBar';
 import { useCode } from './useCode';
 import ExpandMIcon from './icons/ExpandMIcon';
-
-export const LIVE_EXAMPLES_ADDON_ID = 'storybook-addon-live-examples';
-
-export type Config = {
-    borderColor?: string;
-    borderRadius?: number;
-    actionBg?: string;
-    actionColor?: string;
-    actionAccent?: string;
-    errorsBg?: string;
-    errorsColor?: string;
-    fontCode?: string;
-    fontBase?: string;
-    fontSizeCode?: number;
-    fontSizeBase?: number;
-
-    sandboxPath?: string;
-    copyText?: [string, string];
-    shareText?: [string, string];
-    expandText?: [string, string];
-
-    editorTheme?: PrismTheme;
-    scope: Record<string, any>;
-};
+import { configValue, getConfig } from '../config';
 
 export type ExampleProps = {
     id?: string;
@@ -50,14 +26,8 @@ export type ExampleProps = {
     scope?: Record<string, unknown>;
     mobileOnly?: string | boolean;
     desktopOnly?: string | boolean;
-};
-
-const getConfig = () => {
-    return addons.getConfig()[LIVE_EXAMPLES_ADDON_ID] || {};
-};
-
-const configValue = (key: string, defaultValue: any): Config => {
-    return getConfig()[key] || defaultValue;
+    mobileWidth?: number;
+    mobileHeight?: number;
 };
 
 // temporary hack fix: prevent blinking when url change
@@ -77,11 +47,11 @@ const ComponentWrapper = styled.div(
 
 const Wrapper = styled.div(`
     position: relative;
-    background: #f0f0f0;
 `);
 
-const PreviewWrapper = styled.div`
-    background-color: #fafafa;
+const PreviewWrapper = styled.div(
+    ({ theme }) => `
+    background-color: ${configValue('bgColor', theme.background.app)};
     margin: 0 auto;
     position: relative;
 
@@ -94,24 +64,27 @@ const PreviewWrapper = styled.div`
         transform: translate3d(0, 0, 1px);
         width: 360px;
         height: 460px;
-        border-left: 1px solid #dbdee1;
-        border-right: 1px solid #dbdee1;
+        border-left: 1px solid ${configValue('borderColor', theme.appBorderColor)};
+        border-right: 1px solid ${configValue('borderColor', theme.appBorderColor)};
     }
-`;
+    `,
+);
 
-const ViewMismatch = styled.div`
+const ViewMismatch = styled.div(
+    ({ theme }) => `
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
     line-height: 24px;
     text-align: center;
     width: 300px;
-    color: rgba(11, 31, 53, 0.3);
+    color: ${configValue('hintColor', 'rgba(11, 31, 53, 0.3)')};
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-`;
+`,
+);
 
 const Preview = styled(LivePreview)(`
     padding: 20px;
@@ -167,19 +140,12 @@ export const Example: FC<ExampleProps> = ({
     scope,
     desktopOnly,
     mobileOnly,
-    ...restProps
+    mobileWidth,
+    mobileHeight,
 }) => {
-    console.log(restProps);
     const config = getConfig();
 
-    const {
-        sandboxPath,
-        desktopText = 'switch to desktop view',
-        mobileText = 'switch to mobile view',
-        expandText = 'expand code',
-        copyText = 'copy code',
-        shareText = 'share code',
-    } = config;
+    const { sandboxPath } = config;
 
     const [view, setView] = useState<'desktop' | 'mobile'>('desktop');
 
@@ -250,6 +216,16 @@ export const Example: FC<ExampleProps> = ({
     const showEditor = ready && expanded && !viewMismatch;
     const showErrors = ready && live && !viewMismatch;
 
+    const noDesktopText =
+        typeof mobileOnly === 'string'
+            ? mobileOnly
+            : configValue('noDesktopText', 'Not for use on desktop devices');
+
+    const noMobileText =
+        typeof desktopOnly === 'string'
+            ? desktopOnly
+            : configValue('noMobileText', 'Not for use on mobile devices');
+
     return (
         <ComponentWrapper id={`wrapper-${id}`}>
             <LiveProvider
@@ -279,14 +255,14 @@ export const Example: FC<ExampleProps> = ({
                                     icon={<DisplayMIcon />}
                                     active={view === 'desktop'}
                                     onClick={() => setView('desktop')}
-                                    title={desktopText}
+                                    title={configValue('desktopText', 'switch to desktop view')}
                                 />
 
                                 <ActionButton
                                     icon={<MobilePhoneLineMIcon />}
                                     active={view === 'mobile'}
                                     onClick={() => setView('mobile')}
-                                    title={mobileText}
+                                    title={configValue('mobileText', 'switch to mobile view')}
                                 />
                             </ActionBar.Item>
 
@@ -294,7 +270,7 @@ export const Example: FC<ExampleProps> = ({
                                 <ActionButton
                                     icon={<ExpandMIcon />}
                                     onClick={() => setExpanded(!expanded)}
-                                    title={expandText}
+                                    title={configValue('expandText', 'expand code')}
                                     active={expanded}
                                     disabled={viewMismatch}
                                 />
@@ -302,7 +278,7 @@ export const Example: FC<ExampleProps> = ({
                                 <ActionButton
                                     icon={<CopyLineMIcon />}
                                     onClick={handleCopy}
-                                    title={copyText}
+                                    title={configValue('copyText', 'copy code')}
                                     disabled={viewMismatch}
                                 />
 
@@ -310,7 +286,7 @@ export const Example: FC<ExampleProps> = ({
                                     <ActionButton
                                         icon={<ShareMIcon />}
                                         onClick={handleShare}
-                                        title={shareText}
+                                        title={configValue('shareText', 'share code')}
                                         disabled={viewMismatch}
                                     />
                                 )}
@@ -321,26 +297,30 @@ export const Example: FC<ExampleProps> = ({
                             <ActionButton
                                 icon={<CopyLineMIcon />}
                                 onClick={handleCopy}
-                                title={copyText}
+                                title={configValue('copyText', 'copy code')}
                             />
                         </FixedButtonContainer>
                     )}
 
                     {live && (
-                        <PreviewWrapper className={view}>
+                        <PreviewWrapper
+                            className={view}
+                            style={
+                                view === 'mobile'
+                                    ? {
+                                          width: mobileWidth ? +mobileWidth : undefined,
+                                          height: mobileHeight ? +mobileHeight : undefined,
+                                      }
+                                    : {}
+                            }
+                        >
                             {!viewMismatch && <Preview id={`preview-${id}`} />}
 
                             {viewMismatch && (
                                 <ViewMismatch>
-                                    {view === 'desktop' &&
-                                        (typeof mobileOnly === 'string'
-                                            ? mobileOnly
-                                            : 'Не предназначен для использования на десктопных устройствах.')}
+                                    {view === 'desktop' && noDesktopText}
 
-                                    {view === 'mobile' &&
-                                        (typeof desktopOnly === 'string'
-                                            ? desktopOnly
-                                            : 'Не предназначен для использования на мобильный устройствах.')}
+                                    {view === 'mobile' && noMobileText}
                                 </ViewMismatch>
                             )}
                         </PreviewWrapper>

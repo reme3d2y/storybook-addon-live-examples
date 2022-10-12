@@ -1,5 +1,6 @@
 import { styled } from '@storybook/theming';
 import React, { ButtonHTMLAttributes, FC, ReactNode } from 'react';
+import { configValue } from '../config';
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
     icon?: ReactNode;
@@ -7,7 +8,8 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
     active?: boolean;
 };
 
-const Button = styled.button<Props>`
+const Button = styled.button<Props>(
+    ({ theme }) => `
     width: 48px;
     height: 48px;
     opacity: 0.3;
@@ -30,6 +32,7 @@ const Button = styled.button<Props>`
     cursor: pointer;
     transition: background 0.2s ease, border 0.2s ease, color 0.2s ease, transform 0.12s ease;
     box-sizing: border-box;
+    color: ${configValue('borderColor', '#000')};
 
     &.active {
         opacity: 1;
@@ -47,7 +50,8 @@ const Button = styled.button<Props>`
         cursor: default;
         opacity: 0.3;
     }
-`;
+`,
+);
 
 export const ActionButton: FC<Props> = ({ icon, onClick, active, ...restProps }) => (
     <Button

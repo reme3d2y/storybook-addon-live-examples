@@ -1,8 +1,5 @@
 import { ArgsTable, Preview, Story, Meta } from '@storybook/addon-docs';
 import { Canvas, Example } from '../';
-import { ModalDesktop } from '@alfalab/core-components/modal/desktop';
-import { ModalMobile } from '@alfalab/core-components/modal/mobile';
-import { Button } from '@alfalab/core-components/button';
 
 <Meta title='Components/MDX' parameters={{ previewTabs: { canvas: { hidden: true } } }} />
 
@@ -14,74 +11,62 @@ import { Button } from '@alfalab/core-components/button';
 
 export const list = [1, 2, 3];
 
-```tsx live expanded
+```tsx live expanded id=1
 render(() => {
-    console.log('desktop');
     const [open, setOpen] = React.useState<boolean>(false);
 
     const handleModalOpen = () => setOpen(!open);
     return (
         <>
-        <Button view='primary' size='s' onClick={handleModalOpen}>
-            открыть Destop
-        </Button>
-        <ModalDesktop open={open} onClose={handleModalOpen} size='m' container={() => document.getElementById('preview-undefined')}>
-                <ModalDesktop.Header hasCloser={true}>Почему банк проверяет мои операции?</ModalDesktop.Header>
+            <Button view='primary' size='s' onClick={handleModalOpen}>
+                open desktop modal
+            </Button>
+            <ModalDesktop open={open} onClose={handleModalOpen} size='m' container={() => document.getElementById('preview-1')}>
+                <ModalDesktop.Header hasCloser={true}>Desktop demo</ModalDesktop.Header>
                 <ModalDesktop.Content>
-                    <p>  Сейчас много говорят об отказах банков в проведении операций, блокировках
-                        интернет-банка. Это связано с тем, что Центральный банк РФ обязывает банки
-                        выявлять операции своих клиентов, потенциально нарушающие требования
-                        Федерального закона 115-ФЗ «О противодействии легализации (отмыванию)
-                        доходов, полученных преступным путем, и финансированию терроризма».
-                    </p>
-                    <br />
                     <p>
-                        Ознакомиться с требованиями ЦБ РФ можно на официальном сайте. Банки обязаны
-                        предотвращать проведение таких операций и поэтому могут запросить
-                        дополнительную информацию и документы, ограничить доступ к платежам через
-                        интернет-банк или даже отказать в исполнении платежа.
+                    With the plugin you can show different demos for desktop and mobile version
+                    </p>
+                    <p>
+                        Use @MOBILE@ as separator to split desktop and mobile code
+                    </p>
+                    <p>
+                        <a href="https://raw.githubusercontent.com/reme3d2y/storybook-addon-live-examples/main/stories/MDX.stories.mdx" target="_blank" rel="noopener nofollow">
+                            See
+                        </a> source code of this demo
                     </p>
                 </ModalDesktop.Content>
                 <ModalDesktop.Footer>
                     <Button view='primary' size='s' onClick={handleModalOpen}>
-                        Понятно
+                        Close
                     </Button>
                 </ModalDesktop.Footer>
             </ModalDesktop>
         </>
     );
 });
-#MOBILE#
+@MOBILE@
 render(() => {
-    console.log('mobile');
     const [open, setOpen] = React.useState<boolean>(false);
 
     const handleModalOpen = () => setOpen(!open);
     return (
         <>
-        <Button view='primary' size='s' onClick={handleModalOpen}>
-            открыть Mobile
-        </Button>
-        <ModalMobile open={open} onClose={handleModalOpen} size='m' container={() => document.getElementById('preview-undefined')}>
-                <ModalMobile.Header hasCloser={true}>Почему банк проверяет мои операции?</ModalMobile.Header>
+            <Button view='primary' size='s' onClick={handleModalOpen}>
+                open mobile modal
+            </Button>
+            <ModalMobile open={open} onClose={handleModalOpen} size='m' container={() => document.getElementById('preview-1')}>
+                <ModalMobile.Header hasCloser={true}>Mobile demo</ModalMobile.Header>
                 <ModalMobile.Content>
-                    <p>  Сейчас много говорят об отказах банков в проведении операций, блокировках
-                        интернет-банка. Это связано с тем, что Центральный банк РФ обязывает банки
-                        выявлять операции своих клиентов, потенциально нарушающие требования
-                        Федерального закона 115-ФЗ «О противодействии легализации (отмыванию)
-                        доходов, полученных преступным путем, и финансированию терроризма».
-                    </p>
-                    <br />
                     <p>
-                        Ознакомиться с требованиями ЦБ РФ можно на официальном сайте. Банки обязаны
-                        предотвращать проведение таких операций и поэтому могут запросить
-                        дополнительную информацию и документы, ограничить доступ к платежам через
-                        интернет-банк или даже отказать в исполнении платежа.
+                        <a href="https://raw.githubusercontent.com/reme3d2y/storybook-addon-live-examples/main/stories/MDX.stories.mdx" target="_blank" rel="noopener nofollow">
+                            See
+                        </a> source code of this demo
                     </p>
                 </ModalMobile.Content>
                 <ModalMobile.Footer>
                     <Button view='primary' size='s' onClick={handleModalOpen}>
-                        Понятно
+                        Close
                     </Button>
                 </ModalMobile.Footer>
             </ModalMobile>

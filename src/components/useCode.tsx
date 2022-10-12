@@ -14,7 +14,7 @@ type UseCodeProps = {
     view?: 'desktop' | 'mobile';
 };
 
-const CHUNK_SEPARATOR = '#MOBILE#';
+const CHUNK_SEPARATOR = '@MOBILE@';
 
 const transpile = async (code: string) => {
     return prettier.format(await transpileTs(code), {
@@ -46,7 +46,7 @@ export function useCode({
     const prepareCode = async () => {
         let [desktop = '', mobile = ''] = await Promise.all(
             initialCode
-                .split(CHUNK_SEPARATOR)
+                .split(new RegExp(`^\\s*${CHUNK_SEPARATOR}`, 'm'))
                 .map((s) => s.trim())
                 .map(async (codeChunk) =>
                     needsTranspile ? await transpile(codeChunk) : codeChunk,

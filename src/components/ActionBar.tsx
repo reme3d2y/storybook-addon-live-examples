@@ -1,5 +1,6 @@
-import { css, styled } from '@storybook/theming';
+import { styled } from '@storybook/theming';
 import React, { FC, ReactNode } from 'react';
+import { configValue } from '../config';
 
 type ItemProps = {
     right?: boolean;
@@ -23,29 +24,33 @@ type WrapperProps = {
     children?: ReactNode;
 };
 
-const Wrapper = styled.div`
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    background: #fafafa;
-    border-bottom: 1px solid #dbdee1;
-`;
+const Wrapper = styled.div(
+    ({ theme }) => `
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        background-color: ${configValue('bgColor', theme.background.app)};
+        border-bottom: 1px solid ${configValue('borderColor', theme.appBorderColor)};
+    `,
+);
 
-const RightAddons = styled.div`
-    position: relative;
+const RightAddons = styled.div(
+    ({ theme }) => `
+        position: relative;
 
-    &::before {
-        content: '';
-        display: block;
-        transform: translateY(-50%);
-        top: 50%;
-        left: 0;
-        height: 24px;
-        width: 1px;
-        background: #e7e9eb;
-        position: absolute;
-    }
-`;
+        &::before {
+            content: '';
+            display: block;
+            transform: translateY(-50%);
+            top: 50%;
+            left: 0;
+            height: 24px;
+            width: 1px;
+            background: ${configValue('borderColor', theme.appBorderColor)};
+            position: absolute;
+        }
+    `,
+);
 
 export const ActionBarComponent: FC<WrapperProps> = ({ rightAddons, children }) => (
     <Wrapper>
