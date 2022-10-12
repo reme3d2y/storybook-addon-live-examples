@@ -32,7 +32,7 @@ const Button = styled.button<Props>(
     cursor: pointer;
     transition: background 0.2s ease, border 0.2s ease, color 0.2s ease, transform 0.12s ease;
     box-sizing: border-box;
-    color: ${configValue('borderColor', '#000')};
+    color: ${configValue('iconColor', '#000')};
 
     &.active {
         opacity: 1;
