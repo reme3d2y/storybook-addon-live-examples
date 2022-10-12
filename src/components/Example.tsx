@@ -58,7 +58,7 @@ const PreviewWrapper = styled.div(
 
     &.desktop {
         width: 100%;
-        min-height: 200px;
+        min-height: 100px;
     }
 
     &.mobile {
