@@ -152,7 +152,7 @@ export const Example: FC<ExampleProps> = ({
 
     const [expanded, setExpanded] = useState(expandedProp || !live);
 
-    const { code, setCode, resetCode, ready } = useCode({
+    const { code, setCode, resetCode, resetKey, ready } = useCode({
         initialCode: codeProp,
         desktopOnly,
         mobileOnly,
@@ -334,7 +334,7 @@ export const Example: FC<ExampleProps> = ({
                             onChange={handleChange}
                             language={language}
                             disabled={!live}
-                            key={view}
+                            key={`${view}_${resetKey}`}
                         />
                     </LiveEditorWrapper>
                 )}

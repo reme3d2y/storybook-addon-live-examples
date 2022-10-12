@@ -35,6 +35,7 @@ export function useCode({
 
     const needsTranspile = live && ['typescript', 'tsx'].includes(language);
 
+    const [resetKey, setResetKey] = useState(+new Date());
     const [commonCode, setCommonCode] = useState('');
     const [mobileCode, setMobileCode] = useState('');
     const [desktopCode, setDesktopCode] = useState('');
@@ -71,19 +72,28 @@ export function useCode({
 
     let code = commonCode;
     let setCode = setCommonCode;
-    let resetCode = () => setCommonCode(initialCode);
+    let resetCode = () => {
+        setResetKey(+new Date());
+        setCommonCode(initialCode);
+    };
 
     if (!useCommonCode) {
         if (view === 'desktop') {
             code = mobileOnly ? '' : desktopCode;
             setCode = setDesktopCode;
-            resetCode = () => setDesktopCode(desktopInitialCode);
+            resetCode = () => {
+                setResetKey(+new Date());
+                setDesktopCode(desktopInitialCode);
+            };
         }
 
         if (view === 'mobile') {
             code = desktopOnly ? '' : mobileCode;
             setCode = setMobileCode;
-            resetCode = () => setMobileCode(mobileInitialCode);
+            resetCode = () => {
+                setResetKey(+new Date());
+                setMobileCode(mobileInitialCode);
+            };
         }
     }
 
@@ -91,6 +101,7 @@ export function useCode({
         code,
         setCode,
         resetCode,
+        resetKey,
         ready,
     };
 }
