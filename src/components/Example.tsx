@@ -54,6 +54,7 @@ const PreviewWrapper = styled.div(
     background-color: ${configValue('bgColor', theme.background.app)};
     margin: 0 auto;
     position: relative;
+    overflow: auto;
 
     &.desktop {
         width: 100%;
