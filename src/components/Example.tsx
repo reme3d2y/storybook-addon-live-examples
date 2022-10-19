@@ -289,7 +289,7 @@ export const Example: FC<ExampleProps> = ({
                                     {view === 'desktop' && <Preview />}
 
                                     <MobileFrame
-                                        src={`/iframe.html?id=${mobileFrameName}&viewMode=story`}
+                                        src={`iframe.html?id=${mobileFrameName}&viewMode=story`}
                                         ref={frameRef}
                                         onLoad={handleIframeLoad}
                                         style={{
