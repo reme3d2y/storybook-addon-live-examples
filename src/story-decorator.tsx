@@ -5,8 +5,6 @@ import { extractLanguageFromFilename } from './components/utils';
 import { LIVE_EXAMPLES_ADDON_ID } from './config';
 
 export const decorator = (storyFn: StoryFn, context: StoryContext) => {
-    console.log();
-
     if (
         context.viewMode !== 'docs' ||
         context.parameters.defaultCanvas ||
@@ -23,7 +21,6 @@ export const decorator = (storyFn: StoryFn, context: StoryContext) => {
             <Example
                 code={code}
                 live={live}
-                id={context.id}
                 expanded={expanded}
                 scope={scope}
                 language={

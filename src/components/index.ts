@@ -3,3 +3,4 @@ export * from './CodeAdapter';
 export * from './Canvas';
 export * from './CanvasAdapter';
 export * from './CanvasReplacer';
+export * from './MobileFrame';

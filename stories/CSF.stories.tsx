@@ -5,11 +5,6 @@ import { CSF } from './CSF';
 export default {
     title: 'Components/CSF',
     component: CSF,
-    parameters: {
-        scope: {
-            CSF,
-        },
-    },
 };
 
 export const Primary = () => {

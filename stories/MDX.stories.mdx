@@ -9,9 +9,7 @@ import { Canvas, Example } from '../';
 
 #### [See source code](https://raw.githubusercontent.com/reme3d2y/storybook-addon-live-examples/main/stories/MDX.stories.mdx)
 
-export const list = [1, 2, 3];
-
-```tsx live expanded id=1
+```tsx live expanded
 render(() => {
     const [open, setOpen] = React.useState<boolean>(false);
 
@@ -21,7 +19,7 @@ render(() => {
             <Button view='primary' size='s' onClick={handleModalOpen}>
                 open desktop modal
             </Button>
-            <ModalDesktop open={open} onClose={handleModalOpen} size='m' container={() => document.getElementById('preview-1')}>
+            <ModalDesktop open={open} onClose={handleModalOpen} size='m'>
                 <ModalDesktop.Header hasCloser={true}>Desktop demo</ModalDesktop.Header>
                 <ModalDesktop.Content>
                     <p>
@@ -55,7 +53,7 @@ render(() => {
             <Button view='primary' size='s' onClick={handleModalOpen}>
                 open mobile modal
             </Button>
-            <ModalMobile open={open} onClose={handleModalOpen} size='m' container={() => document.getElementById('preview-1')}>
+            <ModalMobile open={open} onClose={handleModalOpen} size='m'>
                 <ModalMobile.Header hasCloser={true}>Mobile demo</ModalMobile.Header>
                 <ModalMobile.Content>
                     <p>
@@ -70,6 +68,45 @@ render(() => {
                     </Button>
                 </ModalMobile.Footer>
             </ModalMobile>
+        </>
+    );
+});
+```
+
+```tsx live expanded desktopOnly
+render(() => {
+    const [open, setOpen] = React.useState<boolean>(false);
+
+    const handleModalOpen = () => setOpen(!open);
+    return (
+        <>
+            <Button view='primary' size='s' onClick={handleModalOpen}>
+                open desktop modal
+            </Button>
+            <ModalDesktop open={open} onClose={handleModalOpen} size='m'>
+                <ModalDesktop.Header hasCloser={true}>Desktop demo</ModalDesktop.Header>
+                <ModalDesktop.Content>
+                    <p>
+                        With the plugin you can show different demos for desktop and mobile version
+                    </p>
+                    <p>Use @MOBILE@ as separator to split desktop and mobile code</p>
+                    <p>
+                        <a
+                            href='https://raw.githubusercontent.com/reme3d2y/storybook-addon-live-examples/main/stories/MDX.stories.mdx'
+                            target='_blank'
+                            rel='noopener nofollow'
+                        >
+                            See
+                        </a>{' '}
+                        source code of this demo
+                    </p>
+                </ModalDesktop.Content>
+                <ModalDesktop.Footer>
+                    <Button view='primary' size='s' onClick={handleModalOpen}>
+                        Close
+                    </Button>
+                </ModalDesktop.Footer>
+            </ModalDesktop>
         </>
     );
 });

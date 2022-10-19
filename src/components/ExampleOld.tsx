@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback, useEffect, useRef } from 'react';
+import React, { FC, useState, useCallback, useEffect } from 'react';
 import { LiveProvider, LiveEditor, LivePreview, LiveError } from 'react-live';
 import { Language } from 'prism-react-renderer';
 import defaultTheme from 'prism-react-renderer/themes/vsLight';
@@ -17,6 +17,7 @@ import ExpandMIcon from './icons/ExpandMIcon';
 import { configValue, getConfig } from '../config';
 
 export type ExampleProps = {
+    id?: string;
     live?: boolean;
     code?: string;
     expanded?: boolean;
@@ -28,6 +29,9 @@ export type ExampleProps = {
     mobileWidth?: number;
     mobileHeight?: number;
 };
+
+// temporary hack fix: prevent blinking when url change
+const heightCache: Record<string, string> = {};
 
 const ComponentWrapper = styled.div(
     ({ theme }) => `
@@ -51,14 +55,21 @@ const PreviewWrapper = styled.div(
     margin: 0 auto;
     position: relative;
     overflow: auto;
-    min-height: 100px;
+
+    &.desktop {
+        width: 100%;
+        min-height: 100px;
+    }
+
+    &.mobile {
+        transform: translate3d(0, 0, 1px);
+        width: 360px;
+        height: 460px;
+        border-left: 1px solid ${configValue('borderColor', theme.appBorderColor)};
+        border-right: 1px solid ${configValue('borderColor', theme.appBorderColor)};
+    }
     `,
 );
-
-const Preview = styled(LivePreview)(`
-    padding: 20px;
-    box-sizing: border-box;
-`);
 
 const ViewMismatch = styled.div(
     ({ theme }) => `
@@ -75,6 +86,11 @@ const ViewMismatch = styled.div(
     transform: translate(-50%, -50%);
 `,
 );
+
+const Preview = styled(LivePreview)(`
+    padding: 20px;
+    box-sizing: border-box;
+`);
 
 const LiveEditorWrapper = styled.div<{ live?: boolean; expanded?: boolean; code?: string }>(
     ({ theme, live, expanded }) => `
@@ -115,17 +131,8 @@ const FixedButtonContainer = styled.div`
     z-index: 1;
 `;
 
-const MobileFrame = styled.iframe(
-    ({ theme }) => `
-    display: block;
-    border: 0;
-    margin: 0 auto;
-    border-left: 1px solid ${configValue('borderColor', theme.appBorderColor)};
-    border-right: 1px solid ${configValue('borderColor', theme.appBorderColor)};
-`,
-);
-
 export const Example: FC<ExampleProps> = ({
+    id,
     code: codeProp,
     expanded: expandedProp = false,
     live,
@@ -134,8 +141,8 @@ export const Example: FC<ExampleProps> = ({
     scope,
     desktopOnly,
     mobileOnly,
-    mobileWidth = 360,
-    mobileHeight = 460,
+    mobileWidth,
+    mobileHeight,
 }) => {
     const config = getConfig();
 
@@ -144,8 +151,6 @@ export const Example: FC<ExampleProps> = ({
     const [view, setView] = useState<'desktop' | 'mobile'>('desktop');
 
     const [expanded, setExpanded] = useState(expandedProp || !live);
-
-    const frameRef = useRef<HTMLIFrameElement>();
 
     const { code, setCode, resetCode, resetKey, ready } = useCode({
         initialCode: codeProp,
@@ -156,21 +161,18 @@ export const Example: FC<ExampleProps> = ({
         view,
     });
 
-    const [iframeLoaded, setIframeLoaded] = useState(false);
-
     const allowShare = sandboxPath && live && !scope;
 
-    const handleIframeLoad = () => {
-        setIframeLoaded(true);
-    };
-
-    const handleCopy = () => {
+    const handleCopy = useCallback(() => {
         copyToClipboard(code);
-    };
+    }, [code]);
 
-    const handleChange = (value: string) => {
-        setCode(value.trim());
-    };
+    const handleChange = useCallback(
+        (value: string) => {
+            setCode(value.trim());
+        },
+        [view],
+    );
 
     const handleShare = () => {
         window.open(
@@ -181,12 +183,31 @@ export const Example: FC<ExampleProps> = ({
     };
 
     useEffect(() => {
-        if (iframeLoaded && frameRef.current) {
-            frameRef.current.contentWindow.postMessage({
-                code,
-            });
-        }
-    }, [iframeLoaded, code]);
+        const preview = document.getElementById(`preview-${id}`);
+        if (!preview) return;
+
+        const handler = (entries: ResizeObserverEntry[]) => {
+            const wrapperId = `wrapper-${id}`;
+            const wrapper = document.getElementById(wrapperId);
+
+            if (!wrapper) return;
+
+            if (entries[0].contentRect.height === 0) {
+                wrapper.style.height = heightCache[wrapperId];
+            } else {
+                wrapper.style.height = '';
+                heightCache[wrapperId] = getComputedStyle(wrapper).height;
+            }
+        };
+
+        const observer = new ResizeObserver(handler);
+
+        observer.observe(preview);
+
+        () => {
+            observer.disconnect();
+        };
+    }, [id]);
 
     if (!ready) return null;
 
@@ -207,9 +228,9 @@ export const Example: FC<ExampleProps> = ({
             : configValue('noMobileText', 'Not for use on mobile devices');
 
     return (
-        <ComponentWrapper>
+        <ComponentWrapper id={`wrapper-${id}`}>
             <LiveProvider
-                code={code || 'render(null)'}
+                code={code}
                 noInline={detectNoInline(code)}
                 theme={config.editorTheme || defaultTheme}
                 scope={{
@@ -283,23 +304,18 @@ export const Example: FC<ExampleProps> = ({
                     )}
 
                     {live && (
-                        <PreviewWrapper className={view}>
-                            {!viewMismatch && (
-                                <>
-                                    {view === 'desktop' && <Preview />}
-
-                                    <MobileFrame
-                                        src='/iframe.html?id=internalmobileframe--page&viewMode=story'
-                                        ref={frameRef}
-                                        onLoad={handleIframeLoad}
-                                        style={{
-                                            width: mobileWidth ? +mobileWidth : undefined,
-                                            height: mobileHeight ? +mobileHeight : undefined,
-                                            display: view === 'mobile' ? 'block' : 'none',
-                                        }}
-                                    />
-                                </>
-                            )}
+                        <PreviewWrapper
+                            className={view}
+                            style={
+                                view === 'mobile'
+                                    ? {
+                                          width: mobileWidth ? +mobileWidth : undefined,
+                                          height: mobileHeight ? +mobileHeight : undefined,
+                                      }
+                                    : {}
+                            }
+                        >
+                            {!viewMismatch && <Preview id={`preview-${id}`} />}
 
                             {viewMismatch && (
                                 <ViewMismatch>

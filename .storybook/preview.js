@@ -6,6 +6,7 @@ import { ModalDesktop } from '@alfalab/core-components/modal/desktop';
 import { ModalMobile } from '@alfalab/core-components/modal/mobile';
 import { ModalResponsive } from '@alfalab/core-components/modal/responsive';
 import { Button } from '@alfalab/core-components/button';
+import { CSF } from '../stories/CSF';
 
 addons.setConfig({
     [LIVE_EXAMPLES_ADDON_ID]: {
@@ -15,11 +16,7 @@ addons.setConfig({
             ModalMobile,
             ModalDesktop,
             ModalResponsive,
-            ScopeWrapper: (props) =>
-                React.createElement('div', {
-                    ...props,
-                    style: { padding: '10px', border: '1px solid #1EA7FD', borderRadius: '4px' },
-                }),
+            CSF: () => CSF,
         },
     },
 });
