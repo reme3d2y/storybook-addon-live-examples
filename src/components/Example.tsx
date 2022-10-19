@@ -139,7 +139,7 @@ export const Example: FC<ExampleProps> = ({
 }) => {
     const config = getConfig();
 
-    const { sandboxPath } = config;
+    const { sandboxPath, mobileFrameName } = config;
 
     const [view, setView] = useState<'desktop' | 'mobile'>('desktop');
 
@@ -289,7 +289,7 @@ export const Example: FC<ExampleProps> = ({
                                     {view === 'desktop' && <Preview />}
 
                                     <MobileFrame
-                                        src='/iframe.html?id=internalmobileframe--page&viewMode=story'
+                                        src={`/iframe.html?id=${mobileFrameName}&viewMode=story`}
                                         ref={frameRef}
                                         onLoad={handleIframeLoad}
                                         style={{

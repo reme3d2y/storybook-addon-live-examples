@@ -11,6 +11,7 @@ import { CSF } from '../stories/CSF';
 addons.setConfig({
     [LIVE_EXAMPLES_ADDON_ID]: {
         sandboxPath: '/docs/sandbox--page',
+        mobileFrameName: 'internalmobileframe--page',
         scope: {
             Button,
             ModalMobile,
