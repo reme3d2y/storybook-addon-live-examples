@@ -1,6 +1,6 @@
 {
     "name": "storybook-addon-live-examples",
-    "version": "0.0.25",
+    "version": "1.0.0",
     "description": "Storybook live examples plugin",
     "keywords": [
         "storybook-addons",
@@ -38,6 +38,8 @@
         "release": "yarn build && auto shipit"
     },
     "devDependencies": {
+        "@alfalab/core-components": "^32.1.1",
+        "@alfalab/icons-glyph": "^2.66.0",
         "@babel/cli": "^7.12.1",
         "@babel/core": "^7.12.3",
         "@babel/preset-env": "^7.12.1",
@@ -87,7 +89,7 @@
         "icon": "https://user-images.githubusercontent.com/321738/63501763-88dbf600-c4cc-11e9-96cd-94adadc2fd72.png"
     },
     "dependencies": {
-        "react-live": "^2.3.0",
-        "prettier": "^2.4.0"
+        "prettier": "^2.4.0",
+        "react-live": "^2.3.0"
     }
 }

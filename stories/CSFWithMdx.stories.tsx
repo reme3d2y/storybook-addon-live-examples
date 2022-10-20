@@ -29,12 +29,6 @@ export const Primary = () => {
     );
 };
 
-Primary.parameters = {
-    scope: {
-        CSF,
-    },
-};
-
 export const Secondary = () => {
     const [counter, setCounter] = React.useState(0);
 
@@ -52,8 +46,5 @@ export const Secondary = () => {
 };
 
 Secondary.parameters = {
-    scope: {
-        CSF,
-    },
     expanded: true,
 };
