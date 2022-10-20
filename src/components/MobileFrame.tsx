@@ -23,6 +23,7 @@ export const MobileFrame: FC<MobileFrameProps> = ({ scope }) => {
         const wrapper = document.querySelector<HTMLDivElement>('.sbdocs-wrapper');
         if (wrapper) {
             wrapper.style.padding = '20px';
+            wrapper.style.overflow = 'auto';
         }
     }, []);
 
