@@ -1,3 +1,17 @@
+# v0.0.26 (Thu Oct 20 2022)
+
+#### 🐛 Bug Fix
+
+- feat(example): update plugin [#5](https://github.com/reme3d2y/storybook-addon-live-examples/pull/5) (valeriacuriceva@MacBook-Pro-Valeria.local [@reme3d2y](https://github.com/reme3d2y) [@Valeri8888](https://github.com/Valeri8888))
+
+#### Authors: 3
+
+- [@Valeri8888](https://github.com/Valeri8888)
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+- Валерия Чуричева (valeriacuriceva@MacBook-Pro-Valeria.local)
+
+---
+
 # v0.0.25 (Mon Nov 22 2021)
 
 #### ⚠️ Pushed to `main`
