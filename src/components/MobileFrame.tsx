@@ -14,17 +14,23 @@ export const MobileFrame: FC<MobileFrameProps> = ({ scope }) => {
     const [code, setCode] = useState('');
 
     useEffect(() => {
-        window.addEventListener('message', ({ data }) => {
+        const handler = ({ data }: MessageEvent) => {
             if (data.code) {
                 setCode(data.code);
             }
-        });
+        };
+
+        window.addEventListener('message', handler);
 
         const wrapper = document.querySelector<HTMLDivElement>('.sbdocs-wrapper');
         if (wrapper) {
             wrapper.style.padding = '20px';
             wrapper.style.overflow = 'auto';
         }
+
+        return () => {
+            window.removeEventListener('message', handler);
+        };
     }, []);
 
     return (
