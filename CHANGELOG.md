@@ -1,3 +1,15 @@
+# v1.0.2 (Tue Oct 25 2022)
+
+#### 🐛 Bug Fix
+
+- feat: hide controls on mobile [#6](https://github.com/reme3d2y/storybook-addon-live-examples/pull/6) ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v0.0.26 (Thu Oct 20 2022)
 
 #### 🐛 Bug Fix
