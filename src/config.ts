@@ -16,6 +16,8 @@ export type Config = {
 
     iconColor?: string;
 
+    viewMismatchBg?: string;
+
     fontCode?: string;
     fontBase?: string;
     fontSizeCode?: number;

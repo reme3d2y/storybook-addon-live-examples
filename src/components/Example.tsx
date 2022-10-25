@@ -60,11 +60,12 @@ const Preview = styled(LivePreview)(`
 `);
 
 const ViewMismatch = styled.div`
-    min-height: 100px;
+    min-height: 220px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
+    color: ${configValue('viewMismatchBg', 'rgba(255, 255, 255)')};
 `;
 
 const ViewMismatchText = styled.div`
