@@ -1,3 +1,15 @@
+# v1.0.4 (Tue Oct 25 2022)
+
+#### ⚠️ Pushed to `main`
+
+- fix: styles ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v1.0.3 (Tue Oct 25 2022)
 
 #### 🐛 Bug Fix
