@@ -65,7 +65,7 @@ const ViewMismatch = styled.div`
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: ${configValue('viewMismatchBg', 'rgba(255, 255, 255)')};
+    background-color: ${configValue('viewMismatchBg', 'rgba(255, 255, 255)')};
 `;
 
 const ViewMismatchText = styled.div`
