@@ -51,7 +51,6 @@ const PreviewWrapper = styled.div(
     margin: 0 auto;
     position: relative;
     overflow: auto;
-    min-height: 100px;
     `,
 );
 
@@ -139,9 +138,11 @@ export const Example: FC<ExampleProps> = ({
 }) => {
     const config = getConfig();
 
+    const isMobile = window.innerWidth < 768;
+
     const { sandboxPath, mobileFrameName } = config;
 
-    const [view, setView] = useState<'desktop' | 'mobile'>('desktop');
+    const [view, setView] = useState<'desktop' | 'mobile'>(isMobile ? 'mobile' : 'desktop');
 
     const [expanded, setExpanded] = useState(expandedProp || !live);
 
@@ -195,6 +196,7 @@ export const Example: FC<ExampleProps> = ({
     );
     const showEditor = ready && expanded && !viewMismatch;
     const showErrors = ready && live && !viewMismatch;
+    const showActionBar = !isMobile;
 
     const noDesktopText =
         typeof mobileOnly === 'string'
@@ -205,6 +207,71 @@ export const Example: FC<ExampleProps> = ({
         typeof desktopOnly === 'string'
             ? desktopOnly
             : configValue('noMobileText', 'Not for use on mobile devices');
+
+    const renderActions = () =>
+        live ? (
+            <ActionBar
+                rightAddons={
+                    live && (
+                        <ActionButton
+                            icon={<RepeatMIcon />}
+                            onClick={resetCode}
+                            disabled={viewMismatch}
+                        />
+                    )
+                }
+            >
+                <ActionBar.Item>
+                    <ActionButton
+                        icon={<DisplayMIcon />}
+                        active={view === 'desktop'}
+                        onClick={() => setView('desktop')}
+                        title={configValue('desktopText', 'switch to desktop view')}
+                    />
+
+                    <ActionButton
+                        icon={<MobilePhoneLineMIcon />}
+                        active={view === 'mobile'}
+                        onClick={() => setView('mobile')}
+                        title={configValue('mobileText', 'switch to mobile view')}
+                    />
+                </ActionBar.Item>
+
+                <ActionBar.Item right={true}>
+                    <ActionButton
+                        icon={<ExpandMIcon />}
+                        onClick={() => setExpanded(!expanded)}
+                        title={configValue('expandText', 'expand code')}
+                        active={expanded}
+                        disabled={viewMismatch}
+                    />
+
+                    <ActionButton
+                        icon={<CopyLineMIcon />}
+                        onClick={handleCopy}
+                        title={configValue('copyText', 'copy code')}
+                        disabled={viewMismatch}
+                    />
+
+                    {allowShare && (
+                        <ActionButton
+                            icon={<ShareMIcon />}
+                            onClick={handleShare}
+                            title={configValue('shareText', 'share code')}
+                            disabled={viewMismatch}
+                        />
+                    )}
+                </ActionBar.Item>
+            </ActionBar>
+        ) : (
+            <FixedButtonContainer>
+                <ActionButton
+                    icon={<CopyLineMIcon />}
+                    onClick={handleCopy}
+                    title={configValue('copyText', 'copy code')}
+                />
+            </FixedButtonContainer>
+        );
 
     return (
         <ComponentWrapper>
@@ -218,86 +285,26 @@ export const Example: FC<ExampleProps> = ({
                 }}
             >
                 <Wrapper>
-                    {live ? (
-                        <ActionBar
-                            rightAddons={
-                                live && (
-                                    <ActionButton
-                                        icon={<RepeatMIcon />}
-                                        onClick={resetCode}
-                                        disabled={viewMismatch}
-                                    />
-                                )
-                            }
-                        >
-                            <ActionBar.Item>
-                                <ActionButton
-                                    icon={<DisplayMIcon />}
-                                    active={view === 'desktop'}
-                                    onClick={() => setView('desktop')}
-                                    title={configValue('desktopText', 'switch to desktop view')}
-                                />
-
-                                <ActionButton
-                                    icon={<MobilePhoneLineMIcon />}
-                                    active={view === 'mobile'}
-                                    onClick={() => setView('mobile')}
-                                    title={configValue('mobileText', 'switch to mobile view')}
-                                />
-                            </ActionBar.Item>
-
-                            <ActionBar.Item right={true}>
-                                <ActionButton
-                                    icon={<ExpandMIcon />}
-                                    onClick={() => setExpanded(!expanded)}
-                                    title={configValue('expandText', 'expand code')}
-                                    active={expanded}
-                                    disabled={viewMismatch}
-                                />
-
-                                <ActionButton
-                                    icon={<CopyLineMIcon />}
-                                    onClick={handleCopy}
-                                    title={configValue('copyText', 'copy code')}
-                                    disabled={viewMismatch}
-                                />
-
-                                {allowShare && (
-                                    <ActionButton
-                                        icon={<ShareMIcon />}
-                                        onClick={handleShare}
-                                        title={configValue('shareText', 'share code')}
-                                        disabled={viewMismatch}
-                                    />
-                                )}
-                            </ActionBar.Item>
-                        </ActionBar>
-                    ) : (
-                        <FixedButtonContainer>
-                            <ActionButton
-                                icon={<CopyLineMIcon />}
-                                onClick={handleCopy}
-                                title={configValue('copyText', 'copy code')}
-                            />
-                        </FixedButtonContainer>
-                    )}
+                    {showActionBar && renderActions()}
 
                     {live && (
                         <PreviewWrapper className={view}>
                             {!viewMismatch && (
                                 <>
-                                    {view === 'desktop' && <Preview />}
+                                    {(view === 'desktop' || isMobile) && <Preview />}
 
-                                    <MobileFrame
-                                        src={`iframe.html?id=${mobileFrameName}&viewMode=story`}
-                                        ref={frameRef}
-                                        onLoad={handleIframeLoad}
-                                        style={{
-                                            width: mobileWidth ? +mobileWidth : undefined,
-                                            height: mobileHeight ? +mobileHeight : undefined,
-                                            display: view === 'mobile' ? 'block' : 'none',
-                                        }}
-                                    />
+                                    {!isMobile && (
+                                        <MobileFrame
+                                            src={`iframe.html?id=${mobileFrameName}&viewMode=story`}
+                                            ref={frameRef}
+                                            onLoad={handleIframeLoad}
+                                            style={{
+                                                width: mobileWidth ? +mobileWidth : undefined,
+                                                height: mobileHeight ? +mobileHeight : undefined,
+                                                display: view === 'mobile' ? 'block' : 'none',
+                                            }}
+                                        />
+                                    )}
                                 </>
                             )}
 
