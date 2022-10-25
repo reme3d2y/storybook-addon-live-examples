@@ -59,8 +59,15 @@ const Preview = styled(LivePreview)(`
     box-sizing: border-box;
 `);
 
-const ViewMismatch = styled.div(
-    ({ theme }) => `
+const ViewMismatch = styled.div`
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+`;
+
+const ViewMismatchText = styled.div`
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
@@ -68,12 +75,7 @@ const ViewMismatch = styled.div(
     text-align: center;
     width: 300px;
     color: ${configValue('hintColor', 'rgba(11, 31, 53, 0.3)')};
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-`,
-);
+`;
 
 const LiveEditorWrapper = styled.div<{ live?: boolean; expanded?: boolean; code?: string }>(
     ({ theme, live, expanded }) => `
@@ -310,9 +312,11 @@ export const Example: FC<ExampleProps> = ({
 
                             {viewMismatch && (
                                 <ViewMismatch>
-                                    {view === 'desktop' && noDesktopText}
+                                    <ViewMismatchText>
+                                        {view === 'desktop' && noDesktopText}
 
-                                    {view === 'mobile' && noMobileText}
+                                        {view === 'mobile' && noMobileText}
+                                    </ViewMismatchText>
                                 </ViewMismatch>
                             )}
                         </PreviewWrapper>
