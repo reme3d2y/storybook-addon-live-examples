@@ -1,3 +1,15 @@
+# v1.0.3 (Tue Oct 25 2022)
+
+#### 🐛 Bug Fix
+
+- fix: styles [#7](https://github.com/reme3d2y/storybook-addon-live-examples/pull/7) ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v1.0.2 (Tue Oct 25 2022)
 
 #### 🐛 Bug Fix
