@@ -29,7 +29,7 @@ const Wrapper = styled.div(
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        background-color: ${configValue('bgColor', theme.background.app)};
+        background-color: ${configValue('previewBgColor', theme.background.app)};
         border-bottom: 1px solid ${configValue('borderColor', theme.appBorderColor)};
     `,
 );

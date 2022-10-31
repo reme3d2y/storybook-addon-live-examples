@@ -54,10 +54,13 @@ const PreviewWrapper = styled.div(
     `,
 );
 
-const Preview = styled(LivePreview)(`
+const Preview = styled(LivePreview)(
+    ({ theme }) => `
     padding: 20px;
+    background-color: ${configValue('previewBgColor', theme.background.app)};
     box-sizing: border-box;
-`);
+`,
+);
 
 const ViewMismatch = styled.div`
     min-height: 220px;
@@ -122,6 +125,7 @@ const MobileFrame = styled.iframe(
     display: block;
     border: 0;
     margin: 0 auto;
+    background-color: ${configValue('previewBgColor', theme.background.app)};
     border-left: 1px solid ${configValue('borderColor', theme.appBorderColor)};
     border-right: 1px solid ${configValue('borderColor', theme.appBorderColor)};
 `,
@@ -217,7 +221,7 @@ export const Example: FC<ExampleProps> = ({
                 rightAddons={
                     live && (
                         <ActionButton
-                            icon={<RepeatMIcon />}
+                            icon={RepeatMIcon}
                             onClick={resetCode}
                             disabled={viewMismatch}
                         />
@@ -226,14 +230,14 @@ export const Example: FC<ExampleProps> = ({
             >
                 <ActionBar.Item>
                     <ActionButton
-                        icon={<DisplayMIcon />}
+                        icon={DisplayMIcon}
                         active={view === 'desktop'}
                         onClick={() => setView('desktop')}
                         title={configValue('desktopText', 'switch to desktop view')}
                     />
 
                     <ActionButton
-                        icon={<MobilePhoneLineMIcon />}
+                        icon={MobilePhoneLineMIcon}
                         active={view === 'mobile'}
                         onClick={() => setView('mobile')}
                         title={configValue('mobileText', 'switch to mobile view')}
@@ -242,7 +246,7 @@ export const Example: FC<ExampleProps> = ({
 
                 <ActionBar.Item right={true}>
                     <ActionButton
-                        icon={<ExpandMIcon />}
+                        icon={ExpandMIcon}
                         onClick={() => setExpanded(!expanded)}
                         title={configValue('expandText', 'expand code')}
                         active={expanded}
@@ -250,7 +254,7 @@ export const Example: FC<ExampleProps> = ({
                     />
 
                     <ActionButton
-                        icon={<CopyLineMIcon />}
+                        icon={CopyLineMIcon}
                         onClick={handleCopy}
                         title={configValue('copyText', 'copy code')}
                         disabled={viewMismatch}
@@ -258,7 +262,7 @@ export const Example: FC<ExampleProps> = ({
 
                     {allowShare && (
                         <ActionButton
-                            icon={<ShareMIcon />}
+                            icon={ShareMIcon}
                             onClick={handleShare}
                             title={configValue('shareText', 'share code')}
                             disabled={viewMismatch}
@@ -269,7 +273,7 @@ export const Example: FC<ExampleProps> = ({
         ) : (
             <FixedButtonContainer>
                 <ActionButton
-                    icon={<CopyLineMIcon />}
+                    icon={CopyLineMIcon}
                     onClick={handleCopy}
                     title={configValue('copyText', 'copy code')}
                 />

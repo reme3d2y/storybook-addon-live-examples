@@ -26,6 +26,7 @@ export const MobileFrame: FC<MobileFrameProps> = ({ scope }) => {
         if (wrapper) {
             wrapper.style.padding = '20px';
             wrapper.style.overflow = 'auto';
+            wrapper.style.background = 'transparent';
         }
 
         return () => {

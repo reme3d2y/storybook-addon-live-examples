@@ -38,7 +38,7 @@
         "release": "yarn build && auto shipit"
     },
     "devDependencies": {
-        "@alfalab/core-components": "^32.1.1",
+        "@alfalab/core-components": "^35.1.0",
         "@alfalab/icons-glyph": "^2.66.0",
         "@babel/cli": "^7.12.1",
         "@babel/core": "^7.12.3",

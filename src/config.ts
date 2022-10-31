@@ -5,6 +5,7 @@ export const LIVE_EXAMPLES_ADDON_ID = 'storybook-addon-live-examples';
 
 export type Config = {
     bgColor?: string;
+    previewBgColor?: string;
 
     borderColor?: string;
     borderRadius?: number;

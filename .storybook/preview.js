@@ -12,6 +12,7 @@ addons.setConfig({
     [LIVE_EXAMPLES_ADDON_ID]: {
         sandboxPath: '/docs/sandbox--page',
         mobileFrameName: 'internalmobileframe--page',
+        previewBgColor: '#ffffff',
         scope: {
             Button,
             ModalMobile,

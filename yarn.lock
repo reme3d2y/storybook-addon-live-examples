@@ -2,19 +2,19 @@
 # yarn lockfile v1
 
 
-"@alfalab/core-components@^32.1.1":
-  version "32.1.1"
-  resolved "https://registry.yarnpkg.com/@alfalab/core-components/-/core-components-32.1.1.tgz#d2fff970a8cddcbfc51b412d7e54d2b920deec2a"
-  integrity sha512-msPixazffqwydWiX0j3g+NB60YcFGwVDjWeAnMEZtY9fWuGv9Y/Wa+gSr0wn0U7Cw4yeNJHcT1K7ffEaiKLflg==
+"@alfalab/core-components@^35.1.0":
+  version "35.1.0"
+  resolved "https://registry.yarnpkg.com/@alfalab/core-components/-/core-components-35.1.0.tgz#ec40696bded96af7dbcba7d87cd9085619eb1061"
+  integrity sha512-+qEzNjCtZgkz/bzOuhcrIHefrMQOUco7l8FCLuhQqULfmNy6M6DWMMlFwmtZHTJ1P26cLHR24DykBpJhBuLK+Q==
   dependencies:
     "@alfalab/data" "^1.4.2"
     "@alfalab/hooks" "^1.13.0"
-    "@alfalab/icons-classic" "^1.76.0"
-    "@alfalab/icons-flag" "^1.11.0"
-    "@alfalab/icons-glyph" "^2.64.0"
-    "@alfalab/icons-logotype" "^1.28.0"
+    "@alfalab/icons-classic" "^2.3.0"
+    "@alfalab/icons-flag" "^2.2.0"
+    "@alfalab/icons-glyph" "^2.71.0"
+    "@alfalab/icons-logotype" "^2.19.0"
     "@alfalab/stylelint-core-vars" "^1.4.0"
-    "@alfalab/utils" "^1.13.2"
+    "@alfalab/utils" "^1.13.3"
     "@juggle/resize-observer" "^3.3.1"
     "@popperjs/core" "^2.3.3"
     classnames "^2.3.1"
@@ -40,7 +40,7 @@
     simplebar "^5.3.8"
     swiper "^6.8.2"
     text-mask-core "^5.1.2"
-    ui-primitives "^3.38.0"
+    ui-primitives "^8.10.0"
 
 "@alfalab/data@^1.4.2":
   version "1.4.2"
@@ -55,25 +55,30 @@
     "@alfalab/utils" "^1.13.2"
     uuid "^8.3.2"
 
-"@alfalab/icons-classic@^1.76.0":
-  version "1.76.0"
-  resolved "https://registry.yarnpkg.com/@alfalab/icons-classic/-/icons-classic-1.76.0.tgz#8f40bafc9d247084aececc249ffff93a8d10d7eb"
-  integrity sha512-Zq8srsqnOB3rdkLI2X1JK7c4tJtMThvFPaFi+myOn1+qutNAxeHRzF8yb0V+gVoKw86HxE814teYQIYSVm40Sw==
+"@alfalab/icons-classic@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@alfalab/icons-classic/-/icons-classic-2.3.0.tgz#5e6fdacba70bbf1d8b4b393d289d875a760d3164"
+  integrity sha512-Tmdb9+XllXr84hqd0KQKOQLaE/7cx2Mj04QG9Y+7QwzYDp7sPbO7FjVfI4pfbxqE2KlhrggYKK/cYmiO1k59EQ==
 
-"@alfalab/icons-flag@^1.11.0":
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/@alfalab/icons-flag/-/icons-flag-1.11.0.tgz#136a227a93c1a4b767c06d72d3fc3ccaaf9fd1ea"
-  integrity sha512-n+R4Gr6JaMd8JUTiO0QNkcG8rftM9qiAr+sqbZoOKg56O/8SmAaTY8M4wYRQkP93uGo3vFgI1aaCGPXGFSr73A==
+"@alfalab/icons-flag@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@alfalab/icons-flag/-/icons-flag-2.2.0.tgz#f30ac26125a08282e1117a75df045a5472aac6d0"
+  integrity sha512-egEds3VBNhTaJC/whIAPTUT19nMDuDXWNCQ0e5VjD8m7qbSvppowFoTIaKWv33FzmodaqgrEEoMJJtUbs7DP5g==
 
-"@alfalab/icons-glyph@^2.64.0", "@alfalab/icons-glyph@^2.66.0":
+"@alfalab/icons-glyph@^2.66.0":
   version "2.66.0"
   resolved "https://registry.yarnpkg.com/@alfalab/icons-glyph/-/icons-glyph-2.66.0.tgz#73251b56ede6bf50437dc328cf3fa966c6ea7236"
   integrity sha512-4jZQ29DLSnPtNXwE2fGCOsycVXEx0ArRbxH0KFrNb/JLNirX2nKF770qGMfppZDmbe2kehopnL3g2ClgOLrFxQ==
 
-"@alfalab/icons-logotype@^1.28.0":
-  version "1.29.0"
-  resolved "https://registry.yarnpkg.com/@alfalab/icons-logotype/-/icons-logotype-1.29.0.tgz#6e73b1c8734cee3d08a41b9e5e386a478bb0e6ae"
-  integrity sha512-ztzcW2jfFtZOkBWrpb6nOyQMvJ6VdtJRR3dEABN0OGYq8n92YH0lNvDy2c+L/iwWPnr3/uaoBu1DAozNjHEgsw==
+"@alfalab/icons-glyph@^2.71.0":
+  version "2.76.0"
+  resolved "https://registry.yarnpkg.com/@alfalab/icons-glyph/-/icons-glyph-2.76.0.tgz#f95774cc0f6f66d348099bbac2f69f4e80fbf8bd"
+  integrity sha512-vVE4fOjcxwYwMAbeaY895GK2mibPY9wEpAA8NSWhFFvMh02QgeNQPHeiwyb+X2aBXwlr1TG+BQRwk0UAS7jI4w==
+
+"@alfalab/icons-logotype@^2.19.0":
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/@alfalab/icons-logotype/-/icons-logotype-2.19.0.tgz#7d223c79ea7decc8d6659af87ccc242f7d0a6ad5"
+  integrity sha512-9J5W3JXIZlKhDB1uq4nXkUTAlzubCjHkhjdUrO0Bk9zh7dJF0SgkrRAIkHLf9thGH/hgI/5Tsc0Gjq1cGl+Oew==
 
 "@alfalab/stylelint-core-vars@^1.4.0":
   version "1.4.0"
@@ -84,6 +89,14 @@
   version "1.13.2"
   resolved "https://registry.yarnpkg.com/@alfalab/utils/-/utils-1.13.2.tgz#b00989b426722e21468c23bd159d45f37d8626ec"
   integrity sha512-O5K8uWj986yyM0ryxW8yLpOGIgA5L2I9RknLOWhIbFomkzl+sj8Ej/1rPAzRmCgOR58LzZ0BnZZT44VAES/baQ==
+  dependencies:
+    "@alfalab/data" "^1.4.2"
+    lodash "4.17.21"
+
+"@alfalab/utils@^1.13.3":
+  version "1.13.3"
+  resolved "https://registry.yarnpkg.com/@alfalab/utils/-/utils-1.13.3.tgz#a52b5897139302fff3fb0a55ecb7e1f6f62e34f2"
+  integrity sha512-pg5e3kVM8EUZc2VLQX6zblk5JEsBbdvqwL4wamZpgbDxL2BNpviqXsVOMKqxIe4G9ptFyFnVZVNX2UV22DYPUA==
   dependencies:
     "@alfalab/data" "^1.4.2"
     lodash "4.17.21"
@@ -4030,7 +4043,7 @@ classnames@^2.2.5:
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
   integrity sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==
 
-classnames@^2.3.1, classnames@^2.3.2:
+classnames@^2.3.1:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.2.tgz#351d813bf0137fcc6a76a16b88208d2560a0d924"
   integrity sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==
@@ -10493,10 +10506,10 @@ typical@^5.2.0:
   resolved "https://registry.yarnpkg.com/typical/-/typical-5.2.0.tgz#4daaac4f2b5315460804f0acf6cb69c52bb93066"
   integrity sha512-dvdQgNDNJo+8B2uBQoqdb11eUCE1JQXhvjC/CZtgvZseVd5TYMXnq0+vuUemXbd/Se29cTaUuPX3YIc2xgbvIg==
 
-ui-primitives@^3.38.0:
-  version "3.46.0"
-  resolved "https://registry.yarnpkg.com/ui-primitives/-/ui-primitives-3.46.0.tgz#0dd31e237465a7a65350fcf4347607f54a5154d7"
-  integrity sha512-EGmuBGl4tI5Syq+rZMm3QuLRq2SyDOu6bwsBJMPxLuRNNsM84PFUZZMf+JnnV7qVfuR2bq59TNJY4Wbxf7Tjow==
+ui-primitives@^8.10.0:
+  version "8.19.0"
+  resolved "https://registry.yarnpkg.com/ui-primitives/-/ui-primitives-8.19.0.tgz#9f26d000e2512cefa052a58986cae61b1a9ca102"
+  integrity sha512-I7h2bKfKRe8V/YOREetGhcyLlA3isKVFSfCLivmk8KUBKqGtpQzXkY9bo3Ym2MxaeO0lyh64Vv+62fGHZbghxQ==
 
 unbox-primitive@^1.0.1:
   version "1.0.1"
