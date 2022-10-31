@@ -1,3 +1,15 @@
+# v1.0.6 (Mon Oct 31 2022)
+
+#### ⚠️ Pushed to `main`
+
+- feat: updates ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v1.0.5 (Tue Oct 25 2022)
 
 #### ⚠️ Pushed to `main`
