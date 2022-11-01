@@ -152,6 +152,7 @@ export const Example: FC<ExampleProps> = ({
     const [view, setView] = useState<'desktop' | 'mobile'>(isMobile ? 'mobile' : 'desktop');
 
     const [expanded, setExpanded] = useState(expandedProp || !live);
+    const [mobileFrameAlreadyLoaded, setMobileFrameAlreadyLoaded] = useState(view === 'mobile');
 
     const frameRef = useRef<HTMLIFrameElement>();
 
@@ -195,6 +196,12 @@ export const Example: FC<ExampleProps> = ({
             });
         }
     }, [iframeLoaded, code]);
+
+    useEffect(() => {
+        if (view === 'mobile') {
+            setMobileFrameAlreadyLoaded(true);
+        }
+    }, [view]);
 
     if (!ready) return null;
 
@@ -280,6 +287,8 @@ export const Example: FC<ExampleProps> = ({
             </FixedButtonContainer>
         );
 
+    const shouldRenderMobileFrame = !isMobile && (view === 'mobile' || mobileFrameAlreadyLoaded);
+
     return (
         <ComponentWrapper>
             <LiveProvider
@@ -300,7 +309,7 @@ export const Example: FC<ExampleProps> = ({
                                 <>
                                     {(view === 'desktop' || isMobile) && <Preview />}
 
-                                    {!isMobile && (
+                                    {shouldRenderMobileFrame && (
                                         <MobileFrame
                                             src={`iframe.html?id=${mobileFrameName}&viewMode=story`}
                                             ref={frameRef}
