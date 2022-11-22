@@ -1,3 +1,15 @@
+# v1.0.9 (Tue Nov 22 2022)
+
+#### ⚠️ Pushed to `main`
+
+- feat: handleMessage, change separator ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v1.0.8 (Tue Nov 01 2022)
 
 #### ⚠️ Pushed to `main`
