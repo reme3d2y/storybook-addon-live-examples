@@ -1,6 +1,6 @@
 {
     "name": "storybook-addon-live-examples",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "description": "Storybook live examples plugin",
     "keywords": [
         "storybook-addons",
