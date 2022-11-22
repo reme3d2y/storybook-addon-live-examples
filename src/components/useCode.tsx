@@ -14,7 +14,7 @@ type UseCodeProps = {
     view?: 'desktop' | 'mobile';
 };
 
-const CHUNK_SEPARATOR = '@MOBILE@';
+const CHUNK_SEPARATOR = /^\s*(?:@|\/\/)MOBILE@?/m;
 
 const transpile = async (code: string) => {
     return prettier.format(await transpileTs(code), {
@@ -42,12 +42,12 @@ export function useCode({
     const [desktopInitialCode, setDesktopInitialCode] = useState('');
     const [mobileInitialCode, setMobileInitialCode] = useState('');
 
-    const useCommonCode = initialCode.includes(CHUNK_SEPARATOR) === false;
+    const useCommonCode = CHUNK_SEPARATOR.exec(initialCode) === null;
 
     const prepareCode = async () => {
         let [desktop = '', mobile = ''] = await Promise.all(
             initialCode
-                .split(new RegExp(`^\\s*${CHUNK_SEPARATOR}`, 'm'))
+                .split(CHUNK_SEPARATOR)
                 .map((s) => s.trim())
                 .map(async (codeChunk) =>
                     needsTranspile ? await transpile(codeChunk) : codeChunk,

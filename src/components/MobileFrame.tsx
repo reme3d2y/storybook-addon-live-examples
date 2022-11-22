@@ -6,15 +6,18 @@ import { getConfig } from '../config';
 
 export type MobileFrameProps = {
     scope?: Record<string, unknown>;
+    onMessage?: (data: any) => void;
 };
 
-export const MobileFrame: FC<MobileFrameProps> = ({ scope }) => {
+export const MobileFrame: FC<MobileFrameProps> = ({ scope, onMessage }) => {
     const config = getConfig();
 
     const [code, setCode] = useState('');
 
     useEffect(() => {
         const handler = ({ data }: MessageEvent) => {
+            if (onMessage) onMessage(data);
+
             if (data.code) {
                 setCode(data.code);
             }
