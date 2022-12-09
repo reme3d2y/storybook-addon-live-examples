@@ -1,3 +1,15 @@
+# v1.0.10 (Fri Dec 09 2022)
+
+#### ⚠️ Pushed to `main`
+
+- fix: scroll & reset issues ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v1.0.9 (Tue Nov 22 2022)
 
 #### ⚠️ Pushed to `main`
