@@ -50,7 +50,6 @@ const PreviewWrapper = styled.div(
     background-color: ${configValue('bgColor', theme.background.app)};
     margin: 0 auto;
     position: relative;
-    overflow: auto;
     `,
 );
 
@@ -59,6 +58,7 @@ const Preview = styled(LivePreview)(
     padding: 20px;
     background-color: ${configValue('previewBgColor', theme.background.app)};
     box-sizing: border-box;
+    overflow: auto;
 `,
 );
 
@@ -193,9 +193,10 @@ export const Example: FC<ExampleProps> = ({
         if (iframeLoaded && frameRef.current) {
             frameRef.current.contentWindow.postMessage({
                 code,
+                resetKey,
             });
         }
-    }, [iframeLoaded, code]);
+    }, [iframeLoaded, code, resetKey]);
 
     useEffect(() => {
         if (view === 'mobile') {
@@ -205,12 +206,15 @@ export const Example: FC<ExampleProps> = ({
 
     if (!ready) return null;
 
-    const viewMismatch = Boolean(
-        (view === 'desktop' && mobileOnly) || (view === 'mobile' && desktopOnly),
-    );
+    const noDesktop = Boolean(view === 'desktop' && mobileOnly);
+    const noMobile = Boolean(view === 'mobile' && desktopOnly);
+    const viewMismatch = noMobile || noDesktop;
+
     const showEditor = ready && expanded && !viewMismatch;
     const showErrors = ready && live && !viewMismatch;
     const showActionBar = !isMobile;
+
+    const shouldRenderMobileFrame = !isMobile && (view === 'mobile' || mobileFrameAlreadyLoaded);
 
     const noDesktopText =
         typeof mobileOnly === 'string'
@@ -287,8 +291,6 @@ export const Example: FC<ExampleProps> = ({
             </FixedButtonContainer>
         );
 
-    const shouldRenderMobileFrame = !isMobile && (view === 'mobile' || mobileFrameAlreadyLoaded);
-
     return (
         <ComponentWrapper>
             <LiveProvider
@@ -305,23 +307,19 @@ export const Example: FC<ExampleProps> = ({
 
                     {live && (
                         <PreviewWrapper className={view}>
-                            {!viewMismatch && (
-                                <>
-                                    {(view === 'desktop' || isMobile) && <Preview />}
+                            {!noDesktop && (view === 'desktop' || isMobile) && <Preview />}
 
-                                    {shouldRenderMobileFrame && (
-                                        <MobileFrame
-                                            src={`iframe.html?id=${mobileFrameName}&viewMode=story`}
-                                            ref={frameRef}
-                                            onLoad={handleIframeLoad}
-                                            style={{
-                                                width: mobileWidth ? +mobileWidth : undefined,
-                                                height: mobileHeight ? +mobileHeight : undefined,
-                                                display: view === 'mobile' ? 'block' : 'none',
-                                            }}
-                                        />
-                                    )}
-                                </>
+                            {!noMobile && shouldRenderMobileFrame && (
+                                <MobileFrame
+                                    src={`iframe.html?id=${mobileFrameName}&viewMode=story`}
+                                    ref={frameRef}
+                                    onLoad={handleIframeLoad}
+                                    style={{
+                                        width: mobileWidth ? +mobileWidth : undefined,
+                                        height: mobileHeight ? +mobileHeight : undefined,
+                                        display: view === 'mobile' ? 'block' : 'none',
+                                    }}
+                                />
                             )}
 
                             {viewMismatch && (

@@ -13,6 +13,7 @@ export const MobileFrame: FC<MobileFrameProps> = ({ scope, onMessage }) => {
     const config = getConfig();
 
     const [code, setCode] = useState('');
+    const [resetKey, setResetKey] = useState('');
 
     useEffect(() => {
         const handler = ({ data }: MessageEvent) => {
@@ -20,6 +21,7 @@ export const MobileFrame: FC<MobileFrameProps> = ({ scope, onMessage }) => {
 
             if (data.code) {
                 setCode(data.code);
+                setResetKey(data.resetKey);
             }
         };
 
