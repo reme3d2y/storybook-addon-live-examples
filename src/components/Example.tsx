@@ -41,16 +41,18 @@ const ComponentWrapper = styled.div(
   `,
 );
 
-const Wrapper = styled.div(`
+const Wrapper = styled.div(
+    () => `
     position: relative;
-`);
+`,
+);
 
 const PreviewWrapper = styled.div(
     ({ theme }) => `
     background-color: ${configValue('bgColor', theme.background.app)};
     margin: 0 auto;
     position: relative;
-    `,
+`,
 );
 
 const Preview = styled(LivePreview)(
@@ -62,16 +64,19 @@ const Preview = styled(LivePreview)(
 `,
 );
 
-const ViewMismatch = styled.div`
+const ViewMismatch = styled.div(
+    () => `
     min-height: 220px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     background-color: ${configValue('viewMismatchBg', 'rgba(255, 255, 255)')};
-`;
+`,
+);
 
-const ViewMismatchText = styled.div`
+const ViewMismatchText = styled.div(
+    () => `
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
@@ -79,7 +84,8 @@ const ViewMismatchText = styled.div`
     text-align: center;
     width: 300px;
     color: ${configValue('hintColor', 'rgba(11, 31, 53, 0.3)')};
-`;
+`,
+);
 
 const LiveEditorWrapper = styled.div<{ live?: boolean; expanded?: boolean; code?: string }>(
     ({ theme, live, expanded }) => `
@@ -113,12 +119,14 @@ const StyledLiveErrors = styled(LiveError)(
 `,
 );
 
-const FixedButtonContainer = styled.div`
+const FixedButtonContainer = styled.div(
+    () => `
     position: absolute;
     right: 8px;
     top: 8px;
     z-index: 1;
-`;
+`,
+);
 
 const MobileFrame = styled.iframe(
     ({ theme }) => `
