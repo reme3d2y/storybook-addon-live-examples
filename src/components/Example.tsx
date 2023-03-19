@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback, useEffect, useRef } from 'react';
+import React, { FC, useState, useEffect, useRef } from 'react';
 import { LiveProvider, LiveEditor, LivePreview, LiveError } from 'react-live';
 import { Language } from 'prism-react-renderer';
 import defaultTheme from 'prism-react-renderer/themes/vsLight';
@@ -96,7 +96,7 @@ const LiveEditorWrapper = styled.div<{ live?: boolean; expanded?: boolean; code?
 
     & textarea,
     & pre {
-        padding: ${live ? '12px' : '24px'} !important;
+        padding: ${live ? '12px' : '24px 40px 24px 24px'} !important;
         outline-color: transparent;
     }
 `,
@@ -145,7 +145,9 @@ export const Example: FC<ExampleProps> = ({
 }) => {
     const config = getConfig();
 
-    const isMobile = window.innerWidth < 768;
+    const query = '(max-width: 767px)';
+
+    const [isMobile, setIsMobile] = useState(window.parent.matchMedia(query).matches);
 
     const { sandboxPath, mobileFrameName } = config;
 
@@ -173,20 +175,12 @@ export const Example: FC<ExampleProps> = ({
         setIframeLoaded(true);
     };
 
-    const handleCopy = () => {
-        copyToClipboard(code);
+    const handleCopy = (value: string) => {
+        copyToClipboard(value);
     };
 
     const handleChange = (value: string) => {
         setCode(value.trim());
-    };
-
-    const handleShare = () => {
-        window.open(
-            `${window.parent.location.pathname}?path=${sandboxPath}/code=${encodeURIComponent(
-                code,
-            )}`,
-        );
     };
 
     useEffect(() => {
@@ -204,6 +198,20 @@ export const Example: FC<ExampleProps> = ({
         }
     }, [view]);
 
+    useEffect(() => {
+        const mql = window.parent.matchMedia(query);
+
+        const handleMatchChange = () => setIsMobile(mql.matches);
+
+        mql.addEventListener('change', handleMatchChange);
+
+        handleMatchChange();
+
+        return () => {
+            mql.removeEventListener('change', handleMatchChange);
+        };
+    }, [query]);
+
     if (!ready) return null;
 
     const noDesktop = Boolean(view === 'desktop' && mobileOnly);
@@ -212,7 +220,6 @@ export const Example: FC<ExampleProps> = ({
 
     const showEditor = ready && expanded && !viewMismatch;
     const showErrors = ready && live && !viewMismatch;
-    const showActionBar = !isMobile;
 
     const shouldRenderMobileFrame = !isMobile && (view === 'mobile' || mobileFrameAlreadyLoaded);
 
@@ -229,53 +236,65 @@ export const Example: FC<ExampleProps> = ({
     const renderActions = () =>
         live ? (
             <ActionBar
+                data-role='action-bar'
                 rightAddons={
                     live && (
                         <ActionButton
                             icon={RepeatMIcon}
                             onClick={resetCode}
                             disabled={viewMismatch}
+                            title={configValue('resetText', 'Reset code')}
                         />
                     )
                 }
             >
-                <ActionBar.Item>
-                    <ActionButton
-                        icon={DisplayMIcon}
-                        active={view === 'desktop'}
-                        onClick={() => setView('desktop')}
-                        title={configValue('desktopText', 'switch to desktop view')}
-                    />
+                {!isMobile && (
+                    <ActionBar.Item>
+                        <ActionButton
+                            icon={DisplayMIcon}
+                            active={view === 'desktop'}
+                            onClick={() => setView('desktop')}
+                            title={configValue('desktopText', 'switch to desktop view')}
+                        />
 
-                    <ActionButton
-                        icon={MobilePhoneLineMIcon}
-                        active={view === 'mobile'}
-                        onClick={() => setView('mobile')}
-                        title={configValue('mobileText', 'switch to mobile view')}
-                    />
-                </ActionBar.Item>
+                        <ActionButton
+                            icon={MobilePhoneLineMIcon}
+                            active={view === 'mobile'}
+                            onClick={() => setView('mobile')}
+                            title={configValue('mobileText', 'Switch to mobile view')}
+                        />
+                    </ActionBar.Item>
+                )}
 
                 <ActionBar.Item right={true}>
                     <ActionButton
                         icon={ExpandMIcon}
                         onClick={() => setExpanded(!expanded)}
-                        title={configValue('expandText', 'expand code')}
+                        title={configValue('expandText', 'Expand code')}
                         active={expanded}
                         disabled={viewMismatch}
                     />
 
                     <ActionButton
                         icon={CopyLineMIcon}
-                        onClick={handleCopy}
-                        title={configValue('copyText', 'copy code')}
+                        onClick={() => handleCopy(code)}
+                        title={configValue('copyText', 'Copy code')}
+                        doneTitle={configValue('copiedText', 'Code copied')}
                         disabled={viewMismatch}
                     />
 
                     {allowShare && (
                         <ActionButton
                             icon={ShareMIcon}
-                            onClick={handleShare}
-                            title={configValue('shareText', 'share code')}
+                            onClick={() =>
+                                handleCopy(
+                                    `${
+                                        window.parent.location.pathname
+                                    }?path=${sandboxPath}/code=${encodeURIComponent(code)}`,
+                                )
+                            }
+                            title={configValue('shareText', 'Share code')}
+                            doneTitle={configValue('sharedText', 'Link copied')}
                             disabled={viewMismatch}
                         />
                     )}
@@ -285,14 +304,14 @@ export const Example: FC<ExampleProps> = ({
             <FixedButtonContainer>
                 <ActionButton
                     icon={CopyLineMIcon}
-                    onClick={handleCopy}
+                    onClick={() => handleCopy(code)}
                     title={configValue('copyText', 'copy code')}
                 />
             </FixedButtonContainer>
         );
 
     return (
-        <ComponentWrapper>
+        <ComponentWrapper data-role='wrapper'>
             <LiveProvider
                 code={code || 'render(null)'}
                 noInline={detectNoInline(code)}
@@ -302,15 +321,18 @@ export const Example: FC<ExampleProps> = ({
                     ...scope,
                 }}
             >
-                <Wrapper>
-                    {showActionBar && renderActions()}
+                <Wrapper data-role='code-wrapper'>
+                    {renderActions()}
 
                     {live && (
-                        <PreviewWrapper className={view}>
-                            {!noDesktop && (view === 'desktop' || isMobile) && <Preview />}
+                        <PreviewWrapper className={view} data-role='preview-wrapper'>
+                            {!noDesktop && (view === 'desktop' || isMobile) && (
+                                <Preview data-role='preview' />
+                            )}
 
                             {!noMobile && shouldRenderMobileFrame && (
                                 <MobileFrame
+                                    data-role='mobile-frame'
                                     src={`iframe.html?id=${mobileFrameName}&viewMode=story`}
                                     ref={frameRef}
                                     onLoad={handleIframeLoad}
@@ -342,11 +364,12 @@ export const Example: FC<ExampleProps> = ({
                             language={language}
                             disabled={!live}
                             key={`${view}_${resetKey}`}
+                            data-role='editor'
                         />
                     </LiveEditorWrapper>
                 )}
 
-                {showErrors && <StyledLiveErrors />}
+                {showErrors && <StyledLiveErrors data-role='errors' />}
             </LiveProvider>
         </ComponentWrapper>
     );

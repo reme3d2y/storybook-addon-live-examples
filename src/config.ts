@@ -31,6 +31,10 @@ export type Config = {
     expandText?: string;
     copyText?: string;
     shareText?: string;
+    resetText?: string;
+
+    copiedText?: string;
+    sharedText?: string;
 
     noMobileText?: string;
     noDesktopText?: string;
