@@ -151,7 +151,12 @@ export const Example: FC<ExampleProps> = ({
 
     const { sandboxPath, mobileFrameName } = config;
 
-    const [view, setView] = useState<'desktop' | 'mobile'>(isMobile ? 'mobile' : 'desktop');
+    const [view, setView] = useState<'desktop' | 'mobile'>(() => {
+        if (mobileOnly) return 'mobile';
+        if (desktopOnly) return 'desktop';
+
+        return isMobile ? 'mobile' : 'desktop';
+    });
 
     const [expanded, setExpanded] = useState(expandedProp || !live);
     const [mobileFrameAlreadyLoaded, setMobileFrameAlreadyLoaded] = useState(view === 'mobile');
