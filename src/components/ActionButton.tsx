@@ -1,7 +1,7 @@
 import { IconButton, IconButtonProps } from '@alfalab/core-components/icon-button';
-import { Tooltip, TooltipProps } from '@alfalab/core-components/tooltip';
+import { Toast, ToastProps } from '@alfalab/core-components/toast';
 import { styled } from '@storybook/theming';
-import React, { ButtonHTMLAttributes, FC, forwardRef, ReactNode, useState } from 'react';
+import React, { FC, forwardRef, useState } from 'react';
 import { configValue } from '../config';
 
 export type ActionButtonProps = IconButtonProps & {
@@ -9,7 +9,7 @@ export type ActionButtonProps = IconButtonProps & {
     active?: boolean;
     ref?: React.Ref<HTMLButtonElement>;
     doneTitle?: string;
-    tooltipProps?: Partial<TooltipProps>;
+    toastProps?: Partial<ToastProps>;
 };
 
 const Button = styled(IconButton)<ActionButtonProps>(
@@ -21,24 +21,34 @@ const Button = styled(IconButton)<ActionButtonProps>(
 );
 
 export const ActionButton: FC<ActionButtonProps> = forwardRef(
-    ({ icon, onClick, active, title, doneTitle, tooltipProps, ...restProps }, ref) => {
-        const [text, setText] = useState(title);
+    ({ icon, onClick, active, title, doneTitle, toastProps, ...restProps }, ref) => {
+        const [open, setOpen] = useState(false);
 
         const handleClick = () => {
-            if (doneTitle) setText(doneTitle);
+            if (doneTitle) setOpen(true);
             onClick();
         };
 
         return (
-            <Tooltip
-                position='top'
-                view='hint'
-                trigger='hover'
-                onOpenDelay={doneTitle ? 300 : 600}
-                {...tooltipProps}
-                content={text}
-                onOpen={() => setText(title)}
-            >
+            <>
+                {Boolean(doneTitle) && (
+                    <Toast
+                        open={open}
+                        position='bottom-end'
+                        offset={[0, 100]}
+                        badge={null}
+                        title={doneTitle}
+                        hasCloser={false}
+                        block={false}
+                        onClose={() => setOpen(false)}
+                        autoCloseDelay={1500}
+                        style={{
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                        }}
+                    />
+                )}
+
                 <Button
                     type='button'
                     size='s'
@@ -47,9 +57,10 @@ export const ActionButton: FC<ActionButtonProps> = forwardRef(
                     className={active && 'active'}
                     icon={icon}
                     ref={ref}
+                    title={title}
                     {...restProps}
                 />
-            </Tooltip>
+            </>
         );
     },
 );

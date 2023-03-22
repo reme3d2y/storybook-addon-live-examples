@@ -246,74 +246,80 @@ export const Example: FC<ExampleProps> = ({
             ? desktopOnly
             : configValue('noMobileText', 'Not for use on mobile devices');
 
-    const renderActions = () =>
-        live ? (
-            <ActionBar
-                data-role='action-bar'
-                rightAddons={
-                    live && (
-                        <ActionButton
-                            icon={RepeatMIcon}
-                            onClick={resetCode}
-                            disabled={viewMismatch}
-                            title={configValue('resetText', 'Reset code')}
-                        />
-                    )
-                }
-            >
-                {!isMobile && (
-                    <ActionBar.Item>
-                        <ActionButton
-                            icon={DisplayMIcon}
-                            active={view === 'desktop'}
-                            onClick={() => setView('desktop')}
-                            title={configValue('desktopText', 'switch to desktop view')}
-                        />
+    const renderActions = () => {
+        if (!live && isMobile) return null;
 
-                        <ActionButton
-                            icon={MobilePhoneLineMIcon}
-                            active={view === 'mobile'}
-                            onClick={() => setView('mobile')}
-                            title={configValue('mobileText', 'Switch to mobile view')}
-                        />
-                    </ActionBar.Item>
-                )}
+        if (live) {
+            return (
+                <ActionBar
+                    data-role='action-bar'
+                    rightAddons={
+                        live && (
+                            <ActionButton
+                                icon={RepeatMIcon}
+                                onClick={resetCode}
+                                disabled={viewMismatch}
+                                title={configValue('resetText', 'Reset code')}
+                            />
+                        )
+                    }
+                >
+                    {!isMobile && (
+                        <ActionBar.Item>
+                            <ActionButton
+                                icon={DisplayMIcon}
+                                active={view === 'desktop'}
+                                onClick={() => setView('desktop')}
+                                title={configValue('desktopText', 'switch to desktop view')}
+                            />
 
-                <ActionBar.Item right={true}>
-                    <ActionButton
-                        icon={ExpandMIcon}
-                        onClick={() => setExpanded(!expanded)}
-                        title={configValue('expandText', 'Expand code')}
-                        active={expanded}
-                        disabled={viewMismatch}
-                    />
-
-                    <ActionButton
-                        icon={CopyLineMIcon}
-                        onClick={() => handleCopy(code)}
-                        title={configValue('copyText', 'Copy code')}
-                        doneTitle={configValue('copiedText', 'Code copied')}
-                        disabled={viewMismatch}
-                    />
-
-                    {allowShare && (
-                        <ActionButton
-                            icon={ShareMIcon}
-                            onClick={() =>
-                                handleCopy(
-                                    `${
-                                        window.parent.location.pathname
-                                    }?path=${sandboxPath}/code=${encodeURIComponent(code)}`,
-                                )
-                            }
-                            title={configValue('shareText', 'Share code')}
-                            doneTitle={configValue('sharedText', 'Link copied')}
-                            disabled={viewMismatch}
-                        />
+                            <ActionButton
+                                icon={MobilePhoneLineMIcon}
+                                active={view === 'mobile'}
+                                onClick={() => setView('mobile')}
+                                title={configValue('mobileText', 'Switch to mobile view')}
+                            />
+                        </ActionBar.Item>
                     )}
-                </ActionBar.Item>
-            </ActionBar>
-        ) : (
+
+                    <ActionBar.Item right={true}>
+                        <ActionButton
+                            icon={ExpandMIcon}
+                            onClick={() => setExpanded(!expanded)}
+                            title={configValue('expandText', 'Expand code')}
+                            active={expanded}
+                            disabled={viewMismatch}
+                        />
+
+                        <ActionButton
+                            icon={CopyLineMIcon}
+                            onClick={() => handleCopy(code)}
+                            title={configValue('copyText', 'Copy code')}
+                            doneTitle={configValue('copiedText', 'Code copied')}
+                            disabled={viewMismatch}
+                        />
+
+                        {allowShare && (
+                            <ActionButton
+                                icon={ShareMIcon}
+                                onClick={() =>
+                                    handleCopy(
+                                        `${
+                                            window.parent.location.pathname
+                                        }?path=${sandboxPath}/code=${encodeURIComponent(code)}`,
+                                    )
+                                }
+                                title={configValue('shareText', 'Share code')}
+                                doneTitle={configValue('sharedText', 'Link copied')}
+                                disabled={viewMismatch}
+                            />
+                        )}
+                    </ActionBar.Item>
+                </ActionBar>
+            );
+        }
+
+        return (
             <FixedButtonContainer>
                 <ActionButton
                     icon={CopyLineMIcon}
@@ -322,6 +328,7 @@ export const Example: FC<ExampleProps> = ({
                 />
             </FixedButtonContainer>
         );
+    };
 
     return (
         <ComponentWrapper data-role='wrapper'>
