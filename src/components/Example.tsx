@@ -160,7 +160,7 @@ export const Example: FC<ExampleProps> = ({
     const { sandboxPath, mobileFrameName } = config;
 
     const [view, setView] = useState<'desktop' | 'mobile'>(() => {
-        if (mobileOnly) return 'mobile';
+        if (isMobile || mobileOnly) return 'mobile';
         if (desktopOnly) return 'desktop';
 
         return isMobile ? 'mobile' : 'desktop';
@@ -346,7 +346,7 @@ export const Example: FC<ExampleProps> = ({
 
                     {live && (
                         <PreviewWrapper className={view} data-role='preview-wrapper'>
-                            {!noDesktop && (view === 'desktop' || isMobile) && (
+                            {!viewMismatch && !noDesktop && (view === 'desktop' || isMobile) && (
                                 <Preview data-role='preview' />
                             )}
 
