@@ -1,3 +1,15 @@
+# v1.0.14 (Wed Mar 22 2023)
+
+#### ⚠️ Pushed to `main`
+
+- feat: pr fixes ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v1.0.13 (Sun Mar 19 2023)
 
 #### ⚠️ Pushed to `main`
