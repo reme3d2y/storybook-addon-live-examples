@@ -1,3 +1,15 @@
+# v1.0.15 (Wed Mar 22 2023)
+
+#### ⚠️ Pushed to `main`
+
+- fix: hide preview ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v1.0.14 (Wed Mar 22 2023)
 
 #### ⚠️ Pushed to `main`
