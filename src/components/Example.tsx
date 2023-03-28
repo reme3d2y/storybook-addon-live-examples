@@ -325,6 +325,7 @@ export const Example: FC<ExampleProps> = ({
                     icon={CopyLineMIcon}
                     onClick={() => handleCopy(code)}
                     title={configValue('copyText', 'copy code')}
+                    doneTitle={configValue('copiedText', 'Code copied')}
                 />
             </FixedButtonContainer>
         );
