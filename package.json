@@ -87,7 +87,7 @@
         "icon": "https://user-images.githubusercontent.com/321738/63501763-88dbf600-c4cc-11e9-96cd-94adadc2fd72.png"
     },
     "dependencies": {
-        "@alfalab/core-components": "^35.1.0",
+        "@alfalab/core-components": ">=35.1.0",
         "@alfalab/icons-glyph": "^2.66.0",
         "prettier": "^2.4.0",
         "react-live": "^2.3.0"
