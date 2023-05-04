@@ -1,10 +1,11 @@
-import addons, { StoryContext, StoryFn } from '@storybook/addons';
+import { StoryContext } from '@storybook/react';
+import { addons } from '@storybook/manager-api';
 import React from 'react';
 import { CanvasReplacer, Example } from './components';
 import { extractLanguageFromFilename } from './components/utils';
 import { LIVE_EXAMPLES_ADDON_ID } from './config';
 
-export const decorator = (storyFn: StoryFn, context: StoryContext) => {
+export const decorator = (storyFn: Function, context: StoryContext) => {
     const story = storyFn();
 
     if (
@@ -14,9 +15,11 @@ export const decorator = (storyFn: StoryFn, context: StoryContext) => {
     )
         return story;
 
-    const { live = true, expanded = false, storySource, scope } = context.parameters;
+    const { live = true, expanded = false, docs, scope } = context.parameters;
 
-    const code = storySource ? `render(${storySource.source})` : 'No code available';
+    const code = docs?.source?.originalSource
+        ? `render(${docs.source.originalSource})`
+        : 'No code available';
 
     return (
         <CanvasReplacer id={context.id}>

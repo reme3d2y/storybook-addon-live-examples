@@ -1,4 +1,4 @@
-import { addons } from '@storybook/addons';
+import { addons } from '@storybook/manager-api';
 import { PrismTheme } from 'prism-react-renderer';
 
 export const LIVE_EXAMPLES_ADDON_ID = 'storybook-addon-live-examples';

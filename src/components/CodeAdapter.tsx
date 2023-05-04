@@ -2,9 +2,17 @@ import React from 'react';
 import { Example } from './Example';
 
 type CodeAdapterProps = {
-    children: string;
+    children: JSX.Element;
 };
 
 export const CodeAdapter = ({ children, ...restProps }: CodeAdapterProps) => {
-    return <Example code={children} {...restProps} />;
+    const codeBlockProps = children.props || {};
+
+    return (
+        <Example
+            {...restProps}
+            code={codeBlockProps.children}
+            className={codeBlockProps.className}
+        />
+    );
 };

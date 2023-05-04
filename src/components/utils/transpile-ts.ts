@@ -6,7 +6,7 @@ declare global {
     }
 }
 
-export async function transpileTs(code: string): Promise<string> {
+export function transpileTs(code: string): Promise<string> {
     const transpile = () =>
         window.ts.transpile(code.trim(), {
             noImplicitUseStrict: true,
@@ -15,7 +15,7 @@ export async function transpileTs(code: string): Promise<string> {
         });
 
     if ('ts' in window) {
-        return transpile();
+        return Promise.resolve(transpile());
     } else {
         return new Promise((resolve) => {
             loadService(() => resolve(transpile()));

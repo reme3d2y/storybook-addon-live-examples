@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, useRef } from 'react';
+import React, { FC, useState, useEffect, useRef, useMemo } from 'react';
 import { LiveProvider, LiveEditor, LivePreview, LiveError } from 'react-live';
 import { Language } from 'prism-react-renderer';
 import defaultTheme from 'prism-react-renderer/themes/vsLight';
@@ -9,12 +9,14 @@ import { CopyLineMIcon } from '@alfalab/icons-glyph/CopyLineMIcon';
 import { ShareMIcon } from '@alfalab/icons-glyph/ShareMIcon';
 import { RepeatMIcon } from '@alfalab/icons-glyph/RepeatMIcon';
 
-import { extractLanguageFromClassName, detectNoInline, copyToClipboard } from './utils';
+import { extractLanguageFromClassName, detectNoInline, copyToClipboard, uniqId } from './utils';
 import { ActionButton } from './ActionButton';
 import { ActionBar } from './ActionBar';
+import { LOADED_MESSAGE } from './MobileFrame';
 import { useCode } from './useCode';
 import ExpandMIcon from './icons/ExpandMIcon';
 import { configValue, getConfig } from '../config';
+import { CUSTOM_EVENTS, dispatchCustomEvent } from './events';
 
 export type ExampleProps = {
     live?: boolean;
@@ -36,7 +38,7 @@ const ComponentWrapper = styled.div(
     border: 1px solid ${configValue('borderColor', theme.appBorderColor)};
     margin: 25px 0 40px;
     border-radius: ${configValue('borderRadius', '16px')};
-    font-family: ${configValue('fontBase', theme.typography.fonts.base)};
+    font-family: ${configValue('fontBase', theme.typography?.fonts.base)};
     font-size: ${configValue('fontSizeBase', 16)}px;
   `,
 );
@@ -49,7 +51,7 @@ const Wrapper = styled.div(
 
 const PreviewWrapper = styled.div(
     ({ theme }) => `
-    background-color: ${configValue('bgColor', theme.background.app)};
+    background-color: ${configValue('bgColor', theme.background?.app)};
     margin: 0 auto;
     position: relative;
 `,
@@ -58,7 +60,7 @@ const PreviewWrapper = styled.div(
 const Preview = styled(LivePreview)(
     ({ theme }) => `
     padding: 20px;
-    background-color: ${configValue('previewBgColor', theme.background.app)};
+    background-color: ${configValue('previewBgColor', theme.background?.app)};
     box-sizing: border-box;
     overflow: auto;
 `,
@@ -96,7 +98,7 @@ const LiveEditorWrapper = styled.div<{ live?: boolean; expanded?: boolean; code?
     };
 
     & > div {
-        font-family: ${configValue('fontCode', theme.typography.fonts.mono)} !important;
+        font-family: ${configValue('fontCode', theme.typography?.fonts.mono)} !important;
         outline: 0;
     }
 
@@ -110,7 +112,7 @@ const LiveEditorWrapper = styled.div<{ live?: boolean; expanded?: boolean; code?
 
 const StyledLiveErrors = styled(LiveError)(
     ({ theme }) => `
-    font-family: ${configValue('fontCode', theme.typography.fonts.mono)};
+    font-family: ${configValue('fontCode', theme.typography?.fonts.mono)};
     padding: 10px;
     margin: 0;
     background-color: ${configValue('errorsBg', '#feebea')};
@@ -133,13 +135,13 @@ const MobileFrame = styled.iframe(
     display: block;
     border: 0;
     margin: 0 auto;
-    background-color: ${configValue('previewBgColor', theme.background.app)};
+    background-color: ${configValue('previewBgColor', theme.background?.app)};
     border-left: 1px solid ${configValue('borderColor', theme.appBorderColor)};
     border-right: 1px solid ${configValue('borderColor', theme.appBorderColor)};
 `,
 );
 
-export const Example: FC<ExampleProps> = ({
+export const Example: FC<ExampleProps & { example?: number }> = ({
     code: codeProp,
     expanded: expandedProp = false,
     live,
@@ -180,7 +182,10 @@ export const Example: FC<ExampleProps> = ({
         view,
     });
 
+    const [storyLoaded, setStoryLoaded] = useState(false);
     const [iframeLoaded, setIframeLoaded] = useState(false);
+
+    const exampleId = useMemo(() => uniqId(), []);
 
     const allowShare = sandboxPath && live && !scope;
 
@@ -196,6 +201,23 @@ export const Example: FC<ExampleProps> = ({
         setCode(value.trim());
     };
 
+    const handleViewChange = (view: 'mobile' | 'desktop') => () => {
+        setView(view);
+        dispatchCustomEvent(CUSTOM_EVENTS.VIEW_CHANGE, { view });
+    };
+
+    useEffect(() => {
+        const handler = (ev: MessageEvent) => {
+            if (ev.data.message === LOADED_MESSAGE && ev.data.exampleId === exampleId.toString()) {
+                setStoryLoaded(true);
+            }
+        };
+
+        window.addEventListener('message', handler);
+
+        return () => window.removeEventListener('message', handler);
+    }, []);
+
     useEffect(() => {
         if (iframeLoaded && frameRef.current) {
             frameRef.current.contentWindow.postMessage({
@@ -203,7 +225,7 @@ export const Example: FC<ExampleProps> = ({
                 resetKey,
             });
         }
-    }, [iframeLoaded, code, resetKey]);
+    }, [iframeLoaded, code, storyLoaded, resetKey]);
 
     useEffect(() => {
         if (view === 'mobile') {
@@ -269,14 +291,14 @@ export const Example: FC<ExampleProps> = ({
                             <ActionButton
                                 icon={DisplayMIcon}
                                 active={view === 'desktop'}
-                                onClick={() => setView('desktop')}
+                                onClick={handleViewChange('desktop')}
                                 title={configValue('desktopText', 'switch to desktop view')}
                             />
 
                             <ActionButton
                                 icon={MobilePhoneLineMIcon}
                                 active={view === 'mobile'}
-                                onClick={() => setView('mobile')}
+                                onClick={handleViewChange('mobile')}
                                 title={configValue('mobileText', 'Switch to mobile view')}
                             />
                         </ActionBar.Item>
@@ -285,7 +307,12 @@ export const Example: FC<ExampleProps> = ({
                     <ActionBar.Item right={true}>
                         <ActionButton
                             icon={ExpandMIcon}
-                            onClick={() => setExpanded(!expanded)}
+                            onClick={() => {
+                                setExpanded(!expanded);
+                                dispatchCustomEvent(CUSTOM_EVENTS.SHOW_SOURCE_CODE, {
+                                    shown: !expanded,
+                                });
+                            }}
                             title={configValue('expandText', 'Expand code')}
                             active={expanded}
                             disabled={viewMismatch}
@@ -293,7 +320,10 @@ export const Example: FC<ExampleProps> = ({
 
                         <ActionButton
                             icon={CopyLineMIcon}
-                            onClick={() => handleCopy(code)}
+                            onClick={() => {
+                                handleCopy(code);
+                                dispatchCustomEvent(CUSTOM_EVENTS.COPY);
+                            }}
                             title={configValue('copyText', 'Copy code')}
                             doneTitle={configValue('copiedText', 'Code copied')}
                             disabled={viewMismatch}
@@ -302,13 +332,14 @@ export const Example: FC<ExampleProps> = ({
                         {allowShare && (
                             <ActionButton
                                 icon={ShareMIcon}
-                                onClick={() =>
+                                onClick={() => {
                                     handleCopy(
                                         `${
                                             window.parent.location.origin
                                         }?path=${sandboxPath}/code=${encodeURIComponent(code)}`,
-                                    )
-                                }
+                                    );
+                                    dispatchCustomEvent(CUSTOM_EVENTS.SHARE);
+                                }}
                                 title={configValue('shareText', 'Share code')}
                                 doneTitle={configValue('sharedText', 'Link copied')}
                                 disabled={viewMismatch}
@@ -323,7 +354,10 @@ export const Example: FC<ExampleProps> = ({
             <FixedButtonContainer>
                 <ActionButton
                     icon={CopyLineMIcon}
-                    onClick={() => handleCopy(code)}
+                    onClick={() => {
+                        handleCopy(code);
+                        dispatchCustomEvent(CUSTOM_EVENTS.COPY);
+                    }}
                     title={configValue('copyText', 'copy code')}
                     doneTitle={configValue('copiedText', 'Code copied')}
                 />
@@ -332,7 +366,7 @@ export const Example: FC<ExampleProps> = ({
     };
 
     return (
-        <ComponentWrapper data-role='wrapper'>
+        <ComponentWrapper data-role='wrapper' className='sb-unstyled'>
             <LiveProvider
                 code={code || 'render(null)'}
                 noInline={detectNoInline(code)}
@@ -356,6 +390,7 @@ export const Example: FC<ExampleProps> = ({
                                     data-role='mobile-frame'
                                     src={`iframe.html?id=${mobileFrameName}&viewMode=story`}
                                     ref={frameRef}
+                                    data-id={exampleId}
                                     onLoad={handleIframeLoad}
                                     style={{
                                         width: mobileWidth ? +mobileWidth : undefined,
