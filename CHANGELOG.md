@@ -1,3 +1,27 @@
+# v1.0.18 (Mon Apr 17 2023)
+
+#### 🐛 Bug Fix
+
+- fix(*): fix core components version [#11](https://github.com/reme3d2y/storybook-addon-live-examples/pull/11) ([@reabiliti](https://github.com/reabiliti))
+
+#### Authors: 1
+
+- Aleksandr Dyuzhikov ([@reabiliti](https://github.com/reabiliti))
+
+---
+
+# v1.0.17 (Tue Apr 04 2023)
+
+#### ⚠️ Pushed to `main`
+
+- fix: share ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v1.0.16 (Tue Mar 28 2023)
 
 #### ⚠️ Pushed to `main`

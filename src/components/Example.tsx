@@ -305,7 +305,7 @@ export const Example: FC<ExampleProps> = ({
                                 onClick={() =>
                                     handleCopy(
                                         `${
-                                            window.parent.location.pathname
+                                            window.parent.location.origin
                                         }?path=${sandboxPath}/code=${encodeURIComponent(code)}`,
                                     )
                                 }
