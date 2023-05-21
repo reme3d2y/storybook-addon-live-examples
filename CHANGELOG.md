@@ -1,3 +1,16 @@
+# v1.0.19 (Sun May 21 2023)
+
+#### 🐛 Bug Fix
+
+- fix: rendered more hooks than previous error [#9](https://github.com/reme3d2y/storybook-addon-live-examples/pull/9) (lars.jarlvik@agoda.com [@larsjarlvik](https://github.com/larsjarlvik))
+
+#### Authors: 2
+
+- Lars Jarlvik ([@larsjarlvik](https://github.com/larsjarlvik))
+- ljarlvik (lars.jarlvik@agoda.com)
+
+---
+
 # v1.0.18 (Mon Apr 17 2023)
 
 #### 🐛 Bug Fix
