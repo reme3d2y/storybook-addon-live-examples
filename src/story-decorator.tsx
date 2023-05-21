@@ -5,12 +5,14 @@ import { extractLanguageFromFilename } from './components/utils';
 import { LIVE_EXAMPLES_ADDON_ID } from './config';
 
 export const decorator = (storyFn: StoryFn, context: StoryContext) => {
+    const story = storyFn();
+
     if (
         context.viewMode !== 'docs' ||
         context.parameters.defaultCanvas ||
         addons.getConfig()[LIVE_EXAMPLES_ADDON_ID].defaultCanvas
     )
-        return storyFn();
+        return story;
 
     const { live = true, expanded = false, storySource, scope } = context.parameters;
 
