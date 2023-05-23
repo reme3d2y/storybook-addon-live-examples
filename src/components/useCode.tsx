@@ -1,8 +1,9 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import prettier from 'prettier/standalone';
 import parserBabel from 'prettier/parser-babel';
 import { transpileTs } from './utils';
 import { Language } from 'prism-react-renderer';
+import { dispatchCustomEvent, CUSTOM_EVENTS } from './events';
 
 type UseCodeProps = {
     initialCode: string;
@@ -16,11 +17,10 @@ type UseCodeProps = {
 
 const CHUNK_SEPARATOR = /^\s*(?:@|\/\/)MOBILE@?/m;
 
-const transpile = async (code: string) => {
-    return prettier.format(await transpileTs(code), {
-        parser: 'babel',
-        plugins: [parserBabel],
-    });
+const transpile = (code: string) => {
+    return transpileTs(code).then((jsCode) =>
+        prettier.format(jsCode, { parser: 'babel', plugins: [parserBabel] }),
+    );
 };
 
 export function useCode({
@@ -44,26 +44,29 @@ export function useCode({
 
     const useCommonCode = CHUNK_SEPARATOR.exec(initialCode) === null;
 
-    const prepareCode = async () => {
-        let [desktop = '', mobile = ''] = await Promise.all(
+    const reset = () => {
+        setResetKey(+new Date());
+        dispatchCustomEvent(CUSTOM_EVENTS.REFRESH);
+    };
+
+    const prepareCode = () => {
+        Promise.all(
             initialCode
                 .split(CHUNK_SEPARATOR)
                 .map((s) => s.trim())
-                .map(async (codeChunk) =>
-                    needsTranspile ? await transpile(codeChunk) : codeChunk,
-                ),
-        );
+                .map((codeChunk) => (needsTranspile ? transpile(codeChunk) : codeChunk)),
+        ).then(([desktop = '', mobile = '']) => {
+            setCommonCode(desktop);
 
-        setCommonCode(desktop);
+            if (!useCommonCode) {
+                setDesktopCode(desktop);
+                setMobileCode(mobile);
+                setDesktopInitialCode(desktop);
+                setMobileInitialCode(mobile);
+            }
 
-        if (!useCommonCode) {
-            setDesktopCode(desktop);
-            setMobileCode(mobile);
-            setDesktopInitialCode(desktop);
-            setMobileInitialCode(mobile);
-        }
-
-        setReady(true);
+            setReady(true);
+        });
     };
 
     useEffect(() => {
@@ -73,7 +76,7 @@ export function useCode({
     let code = commonCode;
     let setCode = setCommonCode;
     let resetCode = () => {
-        setResetKey(+new Date());
+        reset();
         setCommonCode(initialCode);
     };
 
@@ -82,7 +85,7 @@ export function useCode({
             code = mobileOnly ? '' : desktopCode;
             setCode = setDesktopCode;
             resetCode = () => {
-                setResetKey(+new Date());
+                reset();
                 setDesktopCode(desktopInitialCode);
             };
         }
@@ -91,7 +94,7 @@ export function useCode({
             code = desktopOnly ? '' : mobileCode;
             setCode = setMobileCode;
             resetCode = () => {
-                setResetKey(+new Date());
+                reset();
                 setMobileCode(mobileInitialCode);
             };
         }

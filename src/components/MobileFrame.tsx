@@ -9,6 +9,8 @@ export type MobileFrameProps = {
     onMessage?: (data: any) => void;
 };
 
+export const LOADED_MESSAGE = 'STORY LOADED';
+
 export const MobileFrame: FC<MobileFrameProps> = ({ scope, onMessage }) => {
     const config = getConfig();
 
@@ -16,6 +18,9 @@ export const MobileFrame: FC<MobileFrameProps> = ({ scope, onMessage }) => {
     const [resetKey, setResetKey] = useState('');
 
     useEffect(() => {
+        const exampleId = window.frameElement.getAttribute('data-id');
+        window.parent.postMessage({ message: LOADED_MESSAGE, exampleId }, '*');
+
         const handler = ({ data }: MessageEvent) => {
             if (onMessage) onMessage(data);
 
@@ -32,6 +37,7 @@ export const MobileFrame: FC<MobileFrameProps> = ({ scope, onMessage }) => {
             wrapper.style.padding = '20px';
             wrapper.style.overflow = 'auto';
             wrapper.style.background = 'transparent';
+            wrapper.classList.add('sb-unstyled');
         }
 
         return () => {

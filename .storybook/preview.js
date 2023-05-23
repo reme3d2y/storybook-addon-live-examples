@@ -1,4 +1,4 @@
-import { addons } from '@storybook/addons';
+import { addons } from '@storybook/manager-api';
 import React from 'react';
 import { LIVE_EXAMPLES_ADDON_ID } from '../src/config';
 import theme from './theme';
@@ -11,7 +11,7 @@ import { CSF } from '../stories/CSF';
 addons.setConfig({
     [LIVE_EXAMPLES_ADDON_ID]: {
         sandboxPath: '/docs/sandbox--page',
-        mobileFrameName: 'internalmobileframe--page',
+        mobileFrameName: 'internalmobileframe--docs',
         previewBgColor: '#ffffff',
         scope: {
             Button,

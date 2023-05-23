@@ -8,7 +8,7 @@
 - 🧱 Check how the components work together
 - <img src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/typescript/typescript.png" width="18" height="18" align="center" /> Typescript supported
 
-[Read docs](https://reme3d2y.github.io/storybook-addon-live-examples/?path=/story/components-docs--page) or [Try live demo](https://alfa-laboratory.github.io/core-components/master/?path=/docs/%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-%D0%BF%D0%B5%D1%81%D0%BE%D1%87%D0%BD%D0%B8%D1%86%D0%B0--page)
+[Read docs](https://reme3d2y.github.io/storybook-addon-live-examples/?path=/story/components-docs--page) or [Try live demo](https://core-ds.github.io/core-components/master/?path=/docs/sandbox--docs)
 
 ## Getting started
 
@@ -53,6 +53,20 @@ addons.setConfig({
         },
     },
 });
+```
+
+### 4. Configure webpack (for storybook 7 only)
+
+```js
+const { patchWebpackConfig } = require('storybook-addon-live-examples/dist/cjs/utils');
+
+module.exports = {
+    webpackFinal: (config) => {
+        patchWebpackConfig(config);
+        
+        return config;
+    }
+};
 ```
 
 ## Usage
