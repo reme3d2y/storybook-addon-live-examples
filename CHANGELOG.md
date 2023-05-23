@@ -1,3 +1,16 @@
+# v1.0.20 (Tue May 23 2023)
+
+#### 🐛 Bug Fix
+
+- feat/storybook7 [#12](https://github.com/reme3d2y/storybook-addon-live-examples/pull/12) ([@Lacronts](https://github.com/Lacronts) [@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 2
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+- Vladimir ([@Lacronts](https://github.com/Lacronts))
+
+---
+
 # v1.0.19 (Sun May 21 2023)
 
 #### 🐛 Bug Fix
