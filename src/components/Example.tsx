@@ -334,8 +334,8 @@ export const Example: FC<ExampleProps & { example?: number }> = ({
                                 icon={ShareMIcon}
                                 onClick={() => {
                                     handleCopy(
-                                        `${
-                                            window.parent.location.origin
+                                        `${window.parent.location.origin}${
+                                            window.parent.location.pathname
                                         }?path=${sandboxPath}/code=${encodeURIComponent(code)}`,
                                     );
                                     dispatchCustomEvent(CUSTOM_EVENTS.SHARE);
