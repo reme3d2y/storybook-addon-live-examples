@@ -1,3 +1,15 @@
+# v2.0.2 (Thu Jun 15 2023)
+
+#### 🐛 Bug Fix
+
+- fix: fixed share path [#13](https://github.com/reme3d2y/storybook-addon-live-examples/pull/13) ([@Lacronts](https://github.com/Lacronts))
+
+#### Authors: 1
+
+- Vladimir ([@Lacronts](https://github.com/Lacronts))
+
+---
+
 # v1.0.20 (Tue May 23 2023)
 
 #### 🐛 Bug Fix
