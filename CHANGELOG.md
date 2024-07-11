@@ -1,3 +1,15 @@
+# v2.0.3 (Thu Jul 11 2024)
+
+#### ⚠️ Pushed to `main`
+
+- feat: gist sharing, format code on blur ([@reme3d2y](https://github.com/reme3d2y))
+
+#### Authors: 1
+
+- Alexander Yatsenko ([@reme3d2y](https://github.com/reme3d2y))
+
+---
+
 # v2.0.2 (Thu Jun 15 2023)
 
 #### 🐛 Bug Fix
