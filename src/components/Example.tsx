@@ -6,17 +6,16 @@ import { styled } from '@storybook/theming';
 import { DisplayMIcon } from '@alfalab/icons-glyph/DisplayMIcon';
 import { MobilePhoneLineMIcon } from '@alfalab/icons-glyph/MobilePhoneLineMIcon';
 import { CopyLineMIcon } from '@alfalab/icons-glyph/CopyLineMIcon';
-import { ShareMIcon } from '@alfalab/icons-glyph/ShareMIcon';
 import { RepeatMIcon } from '@alfalab/icons-glyph/RepeatMIcon';
-
 import { extractLanguageFromClassName, detectNoInline, copyToClipboard, uniqId } from './utils';
 import { ActionButton } from './ActionButton';
 import { ActionBar } from './ActionBar';
 import { LOADED_MESSAGE } from './MobileFrame';
-import { useCode } from './useCode';
+import { formatCode, useCode } from './useCode';
 import ExpandMIcon from './icons/ExpandMIcon';
 import { configValue, getConfig } from '../config';
 import { CUSTOM_EVENTS, dispatchCustomEvent } from './events';
+import { ShareButton } from './ShareButton';
 
 export type ExampleProps = {
     live?: boolean;
@@ -173,7 +172,7 @@ export const Example: FC<ExampleProps & { example?: number }> = ({
 
     const frameRef = useRef<HTMLIFrameElement>();
 
-    const { code, setCode, resetCode, resetKey, ready } = useCode({
+    const { code, setCode, resetCode, resetKey, setResetKey, ready } = useCode({
         initialCode: codeProp,
         desktopOnly,
         mobileOnly,
@@ -199,6 +198,11 @@ export const Example: FC<ExampleProps & { example?: number }> = ({
 
     const handleChange = (value: string) => {
         setCode(value.trim());
+    };
+
+    const handleBlur = () => {
+        setCode(formatCode(code));
+        setResetKey(+new Date());
     };
 
     const handleViewChange = (view: 'mobile' | 'desktop') => () => {
@@ -330,16 +334,8 @@ export const Example: FC<ExampleProps & { example?: number }> = ({
                         />
 
                         {allowShare && (
-                            <ActionButton
-                                icon={ShareMIcon}
-                                onClick={() => {
-                                    handleCopy(
-                                        `${window.parent.location.origin}${
-                                            window.parent.location.pathname
-                                        }?path=${sandboxPath}/code=${encodeURIComponent(code)}`,
-                                    );
-                                    dispatchCustomEvent(CUSTOM_EVENTS.SHARE);
-                                }}
+                            <ShareButton
+                                code={code}
                                 title={configValue('shareText', 'Share code')}
                                 doneTitle={configValue('sharedText', 'Link copied')}
                                 disabled={viewMismatch}
@@ -420,6 +416,7 @@ export const Example: FC<ExampleProps & { example?: number }> = ({
                             language={language}
                             disabled={!live}
                             key={`${view}_${resetKey}`}
+                            onBlur={handleBlur}
                             data-role='editor'
                         />
                     </LiveEditorWrapper>

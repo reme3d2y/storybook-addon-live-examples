@@ -26,6 +26,8 @@ export type Config = {
 
     sandboxPath?: string;
 
+    mobileFrameName?: string;
+
     desktopText?: string;
     mobileText?: string;
     expandText?: string;
@@ -41,10 +43,13 @@ export type Config = {
 
     editorTheme?: PrismTheme;
     scope: Record<string, any>;
+
+    shareMode?: 'gist' | 'url';
+    githubToken?: string;
 };
 
 export const getConfig = () => {
-    return addons.getConfig()[LIVE_EXAMPLES_ADDON_ID] || {};
+    return addons.getConfig()[LIVE_EXAMPLES_ADDON_ID] as Config;
 };
 
 export const configValue = <T extends keyof Config>(key: T, defaultValue: any): Config[T] => {

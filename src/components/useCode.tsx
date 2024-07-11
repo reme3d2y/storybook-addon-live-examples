@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import prettier from 'prettier/standalone';
 import parserBabel from 'prettier/parser-babel';
 import { transpileTs } from './utils';
 import { Language } from 'prism-react-renderer';
-import { dispatchCustomEvent, CUSTOM_EVENTS } from './events';
+import { loadGist } from './utils/share';
+import { CUSTOM_EVENTS, dispatchCustomEvent } from './events';
 
 type UseCodeProps = {
     initialCode: string;
@@ -17,11 +18,10 @@ type UseCodeProps = {
 
 const CHUNK_SEPARATOR = /^\s*(?:@|\/\/)MOBILE@?/m;
 
-const transpile = (code: string) => {
-    return transpileTs(code).then((jsCode) =>
-        prettier.format(jsCode, { parser: 'babel', plugins: [parserBabel] }),
-    );
-};
+export const formatCode = (code: string) =>
+    prettier.format(code, { parser: 'babel', plugins: [parserBabel] });
+
+const transpile = (code: string) => transpileTs(code).then((jsCode) => formatCode(jsCode));
 
 export function useCode({
     initialCode,
@@ -42,6 +42,8 @@ export function useCode({
     const [desktopInitialCode, setDesktopInitialCode] = useState('');
     const [mobileInitialCode, setMobileInitialCode] = useState('');
 
+    const initialCodeRef = useRef<string>();
+
     const useCommonCode = CHUNK_SEPARATOR.exec(initialCode) === null;
 
     const reset = () => {
@@ -49,8 +51,14 @@ export function useCode({
         dispatchCustomEvent(CUSTOM_EVENTS.REFRESH);
     };
 
-    const prepareCode = () => {
-        Promise.all(
+    const prepareCode = async () => {
+        if (/gist:\w+/.test(initialCode)) {
+            initialCode = await loadGist(initialCode.split(':')[1]);
+        }
+
+        initialCodeRef.current = initialCode;
+
+        await Promise.all(
             initialCode
                 .split(CHUNK_SEPARATOR)
                 .map((s) => s.trim())
@@ -77,7 +85,7 @@ export function useCode({
     let setCode = setCommonCode;
     let resetCode = () => {
         reset();
-        setCommonCode(initialCode);
+        setCommonCode(initialCodeRef.current);
     };
 
     if (!useCommonCode) {
@@ -105,6 +113,7 @@ export function useCode({
         setCode,
         resetCode,
         resetKey,
+        setResetKey,
         ready,
     };
 }

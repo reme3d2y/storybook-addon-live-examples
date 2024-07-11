@@ -1,14 +1,14 @@
 import { IconButton, IconButtonProps } from '@alfalab/core-components/icon-button';
 import { Toast, ToastProps } from '@alfalab/core-components/toast';
 import { styled } from '@storybook/theming';
-import React, { FC, forwardRef, useState } from 'react';
+import React, { FC, ReactNode, forwardRef, useState } from 'react';
 import { configValue } from '../config';
 
 export type ActionButtonProps = IconButtonProps & {
     onClick?: () => void;
     active?: boolean;
     ref?: React.Ref<HTMLButtonElement>;
-    doneTitle?: string;
+    doneTitle?: string & ReactNode;
     toastProps?: Partial<ToastProps>;
 };
 
@@ -42,9 +42,11 @@ export const ActionButton: FC<ActionButtonProps> = forwardRef(
                         block={false}
                         onClose={() => setOpen(false)}
                         autoCloseDelay={1500}
+                        {...toastProps}
                         style={{
                             left: '50%',
                             transform: 'translateX(-50%)',
+                            ...toastProps?.style,
                         }}
                     />
                 )}

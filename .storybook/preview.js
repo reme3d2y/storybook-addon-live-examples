@@ -10,8 +10,10 @@ import { CSF } from '../stories/CSF';
 
 addons.setConfig({
     [LIVE_EXAMPLES_ADDON_ID]: {
-        sandboxPath: '/docs/sandbox--page',
+        sandboxPath: '/docs/sandbox--docs',
         mobileFrameName: 'internalmobileframe--docs',
+        githubToken: '',
+        shareMode: 'url',
         previewBgColor: '#ffffff',
         scope: {
             Button,
